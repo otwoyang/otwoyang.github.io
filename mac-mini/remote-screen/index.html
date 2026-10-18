@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>远程屏幕 · Mac mini · 数字世界地图</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; background: #f5f5f5; color: #333; }
+  header { background: #2c3e50; color: white; padding: 20px; }
+  header a { color: #7fb3d5; text-decoration: none; font-size: 14px; }
+  header h1 { font-size: 24px; margin: 8px 0 4px; }
+  header p { opacity: 0.8; font-size: 14px; }
+  main { max-width: 800px; margin: 20px auto; padding: 0 16px 40px; }
+  section { background: white; border-radius: 8px; padding: 20px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+  h2 { font-size: 18px; margin-bottom: 12px; color: #2c3e50; }
+  li { line-height: 1.8; margin-left: 20px; }
+  code { background: #f0f0f0; padding: 2px 6px; border-radius: 4px; font-size: 13px; }
+  table { width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 14px; }
+  th, td { text-align: left; padding: 8px; border-bottom: 1px solid #eee; line-height: 1.6; }
+  th { color: #555; }
+</style>
+</head>
+<body>
+<header>
+  <a href="/mac-mini/">← 返回 Mac mini</a>
+  <h1>🖥️ 远程屏幕</h1>
+  <p>Mac mini 屏幕远程访问：VNC 屏幕共享 + Tailscale 内网</p>
+</header>
+<main>
+  <section>
+    <h2>📋 方案总览</h2>
+    <table>
+      <tr><th>方案</th><th>用途</th><th>状态</th></tr>
+      <tr><td><b>随航 Sidecar</b>（首选）</td><td>iPad 当 Mac mini 显示器</td><td>✅ 正常（iPad 装护航/Outrider）</td></tr>
+      <tr><td><b>VNC 屏幕共享</b>（备胎）</td><td>MacBook Air / iPad 远程看 Mac mini 屏幕</td><td>✅ 已开通（2026-10-18）</td></tr>
+    </table>
+    <p style="margin-top:8px;font-size:14px;color:#666;">两套独立不冲突，可同时用。随航抽风时切 VNC 顶上。</p>
+  </section>
+  <section>
+    <h2>⚙️ Mac mini 端（已开好）</h2>
+    <ul>
+      <li>系统设置 → 通用 → 共享 → <b>屏幕共享</b>：已打开</li>
+      <li>系统设置 → 通用 → 共享 → <b>远程登录</b>：已打开（SSH 用）</li>
+      <li>Tailscale IP：<code>100.83.160.13</code>（设备名 otwoyangmac-mini）</li>
+    </ul>
+  </section>
+  <section>
+    <h2>💻 MacBook Air 连接方法</h2>
+    <ul>
+      <li>MacBook Air 装 Tailscale（<code>https://tailscale.com/download</code>），用同一账号登录</li>
+      <li>Air 的 Tailscale IP：<code>100.76.141.72</code></li>
+      <li>Finder 按 <code>⌘+K</code>，输入 <code>vnc://100.83.160.13</code></li>
+      <li>输入 Mac mini 用户名密码，即进入屏幕</li>
+      <li>走 Tailscale 内网，不同物理网络也能连，无需开公网端口</li>
+    </ul>
+  </section>
+  <section>
+    <h2>📱 iPad 连接方法（随航备胎）</h2>
+    <ul>
+      <li>iPad 装 VNC 客户端（如 RealVNC Viewer，免费）</li>
+      <li>iPad 也需装 Tailscale 并登录同一账号</li>
+      <li>VNC 地址填 <code>100.83.160.13</code>，输 Mac mini 用户名密码</li>
+    </ul>
+  </section>
+  <section>
+    <h2>⚠️ 注意</h2>
+    <ul>
+      <li>MacBook Air 必须先登 Tailscale，否则 <code>100.83.160.13</code> 不可达（2026-10-18 踩过：没登录就连，报"无法通信"）</li>
+      <li>Muse（SSH）用不了 VNC——SSH 碰不到 GUI，只能命令行</li>
+    </ul>
+  </section>
+</main>
+</body>
+</html>
