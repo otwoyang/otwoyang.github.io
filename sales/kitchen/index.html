@@ -66,6 +66,23 @@
       <li>零端口设计：不开放任何网络端口</li>
     </ul>
   </section>
+  <section>
+    <h2>📋 备选方案：iPad 独立网页看板 <span style="background:#ff9f0a;color:#000;font-size:12px;padding:2px 8px;border-radius:10px;">备选</span></h2>
+    <p style="margin-bottom:12px;">地址：<a href="/kitchen-board/">/kitchen-board/</a> —— iPad Safari 直接打开，不依赖 Mac mini、不开端口、不走随航。</p>
+    <h3>⚠️ 已知缺陷（2026-10-18）</h3>
+    <ul>
+      <li><b>只显示 SumUp 订单，不含 ePassi / Edenred</b>——浏览器 JS 调不了 Gmail IMAP（技术硬限制），ePassi 邮件订单看不到</li>
+      <li><b>API Key 需手动输入</b>——存浏览器 localStorage，换浏览器/清数据要重输；Key 在 Mac mini <code>~/.sumup_api_key</code></li>
+      <li><b>完成/恢复状态只在页面内存</b>——刷新页面即丢失，不与 Mac mini 的 kitchen.db 同步</li>
+      <li><b>依赖 SumUp API</b>——API 故障或网络断开则无数据；每 30 秒自动刷新</li>
+      <li><b>菜品名解析简化</b>——直接用 SumUp product_summary，没有 kitchen.py 的完整菜名识别规则（Rest/Rest2 映射、收据补全等）</li>
+    </ul>
+    <h3>适用场景</h3>
+    <ul>
+      <li>Sonja 一人上班时用自己手机看单（不用给个人设备、不用给 API Key 的替代方案是鸿蒙平板 APK）</li>
+      <li>Mac mini 故障时的临时顶替（仅 SumUp 部分）</li>
+    </ul>
+  </section>
 </main>
 </body>
 </html>
