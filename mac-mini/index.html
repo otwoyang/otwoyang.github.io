@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mac mini · Digital World Map</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; background: #f5f5f5; color: #333; }
+  header { background: #2c3e50; color: white; padding: 20px; }
+  header a { color: #7fb3d5; text-decoration: none; font-size: 14px; }
+  header h1 { font-size: 24px; margin: 8px 0 4px; }
+  header p { opacity: 0.8; font-size: 14px; }
+  main { max-width: 860px; margin: 20px auto; padding: 0 16px 40px; }
+  section { background: white; border-radius: 8px; padding: 20px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+  h2 { font-size: 18px; margin-bottom: 12px; color: #2c3e50; }
+  h3 { font-size: 15px; margin: 16px 0 8px; color: #34495e; }
+  li, p { line-height: 1.8; }
+  ul { padding-left: 20px; }
+  code { background: #f0f0f0; padding: 2px 6px; border-radius: 4px; font-size: 13px; word-break: break-all; }
+  pre { background: #f8f8f8; border: 1px solid #e0e0e0; border-radius: 6px; padding: 16px; overflow-x: auto; font-size: 13px; line-height: 1.7; white-space: pre-wrap; word-break: break-word; }
+</style>
+</head>
+<body>
+<header>
+  <a href="/">← 返回地图</a>
+  <h1>💻 Mac mini</h1>
+  <p>Apple Mac mini M6 · 家用服务器</p>
+</header>
+<main>
+  <section>
+    <h2>🧾 购买信息</h2>
+    <ul>
+      <li>机型：Apple Mac mini M6，16GB / 512GB</li>
+      <li>购买：2026-10-16，Verkkokauppa.com，€1,319（公司卡）</li>
+      <li>小票号：139693529（已传 eTasku，收据 #35399825）</li>
+    </ul>
+  </section>
+  <section>
+    <h2>📋 安装设置记录</h2>
+    <p style="color:#888;font-size:13px;margin-bottom:12px;">原件在 Mac mini 桌面：~/Desktop/Mac-mini-安装记录.txt</p>
+    <pre>Mac mini 安装设置记录
+======================
+从 2026-10-17 起，所有的安装和设置经过都记在这里。
+
+---
+2026-10-16 购买
+- Apple Mac mini M6 16GB/512GB，Verkkokauppa.com，€1,319，公司信用卡
+- 小票已上传 eTasku
+
+2026-10-17 09:38 初始化
+- 在店里用仓库键盘完成初始化向导，登录 Apple ID
+- XREAL One 眼镜验证显示正常
+- 10:21 用户关机搬机器（换位置放）。开机后自动登录+Tailscale 自启，无需人工干预
+
+---
+Tailscale
+- 2026-10-17 09:54：从 tailscale.com/download/mac 下载安装；终端执行 tailscale login，在浏览器中完成登录；设备 "otwoyang的Mac Mini" 加入 otwoyang@gmail.com 的 tailnet
+- 2026-10-17 09:56：助手(muse)加入 tailnet，在 tailnet 中可见为 otwoyangmac-mini (100.83.160.13)
+- 开机自启动：系统设置→通用→登录项中 Tailscale 已在"登录时打开"列表
+
+---
+SSH
+- 2026-10-17 09:57：助手生成 SSH 密钥 (ed25519)；用户在 Mac 终端执行命令，将公钥写入 ~/.ssh/authorized_keys
+- 2026-10-17 20:00 发现：远程登录开关之前一直没开！用户手动在系统设置→通用→共享→远程登录 打开后，22 端口正常监听
+- 2026-10-17 20:24 打通：隧道必须用 nc 做 ProxyCommand：ssh -i ~/.ssh/macmini_muse -o ProxyCommand="nc -X connect -x hatch-egress-proxy:3130 %h %p" otwoyang@100.83.160.13
+
+---
+电脑基本设置
+- 不休眠、网络唤醒、断电自启；FileVault 关；开机自动登录；闲置锁屏永不
+- 自动更新已关（2026-10-18 用户亲手关）：下载/安装 macOS 更新/系统数据与安全更新三开关全关
+- 允许外部软件：sudo spctl --master-disable 可开"任何来源"
+
+---
+随航 Sidecar（2026-10-18 定版，用户亲测成功）
+1. 随航不能用 BetterDisplay，尤其虚拟屏（会抢主显示器）
+2. iPad 装护航 App（Outrider），12 元已付
+3. 按 App 介绍设置，给所有权限
+4. 护航自动生成 "outrider helper" 显示器，iPad 镜像它
+5. 首次成功后鼠标可能丢失：关 5 秒重连；iPad 改镜像模式；重启验证
+- BetterDisplay 已于 2026-10-18 彻底卸载（与随航冲突）
+- iPad 触摸在随航里无反应（不重要，鼠标键盘可用）
+
+---
+给 Muse 的权限清单（14 项已全部授予）
+- 文件系统读取/写入、完全磁盘访问、辅助功能、屏幕录制
+- Apple 邮件自动化/读取、备忘录自动化/读取、iMessage 读取
+- 日历、通讯录、提醒事项
+- 远程操控屏幕会话确认
+- 铁律：以后凡是问用户要权限，当场记进这里
+
+---
+重要软件
+- Homebrew 7.0.9（2026-10-17 用户手动安装）
+- rclone v1.75.2（2026-10-18 助手经 SSH 安装）
+- pCloud Drive 桌面端：用户自己装
+
+---
+后续待办
+- Neolink、屏幕共享</pre>
+  </section>
+</main>
+</body>
+</html>
