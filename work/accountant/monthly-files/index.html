@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>每月会计文件指南 · Accountant · 数字世界地图</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; background: #f5f5f5; color: #333; }
+  header { background: #2c3e50; color: white; padding: 20px; }
+  header a { color: #7fb3d5; text-decoration: none; font-size: 14px; }
+  header h1 { font-size: 24px; margin: 8px 0 4px; }
+  header p { opacity: 0.8; font-size: 14px; }
+  main { max-width: 860px; margin: 20px auto; padding: 0 16px 40px; }
+  section { background: white; border-radius: 8px; padding: 20px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+  h2 { font-size: 18px; margin-bottom: 12px; color: #2c3e50; }
+  h3 { font-size: 16px; margin: 16px 0 8px; color: #34495e; border-left: 4px solid #3498db; padding-left: 10px; }
+  li, p { line-height: 1.8; }
+  ul, ol { padding-left: 20px; }
+  ul li, ol li { margin-bottom: 6px; }
+  code { background: #f0f0f0; padding: 2px 6px; border-radius: 4px; font-size: 13px; }
+  .badge { display: inline-block; background: #3498db; color: white; font-size: 12px; padding: 2px 8px; border-radius: 10px; margin-left: 8px; }
+  .badge.warn { background: #e67e22; }
+  .tip { background: #fef9e7; border-left: 4px solid #f1c40f; padding: 12px; margin: 12px 0; border-radius: 0 6px 6px 0; font-size: 14px; line-height: 1.7; }
+  table { width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 14px; }
+  th, td { text-align: left; padding: 10px; border-bottom: 1px solid #eee; line-height: 1.6; vertical-align: top; }
+  th { color: #555; background: #f8f9fa; }
+</style>
+</head>
+<body>
+<header>
+  <a href="/">← 返回地图</a>
+  <h1>📁 每月会计文件指南</h1>
+  <p>给会计 Mikko Kilpinen（KT Kirjanpito Oy）的月度文件 · 固定 5 份，有 Edenred 手机付款时 6 份</p>
+</header>
+<main>
+  <section>
+    <h2>📋 文件总览</h2>
+    <table>
+      <tr><th>#</th><th>文件</th><th>平台</th><th>说明</th></tr>
+      <tr><td><b>01</b></td><td>SUMUP Tilitysraportti<br><span style="color:#888;font-size:12px">Payouts · 结算报表</span></td><td>SumUp</td><td>结算批次与刷卡手续费</td></tr>
+      <tr><td><b>02</b></td><td>SUMUP Myynnit<br><span style="color:#888;font-size:12px">Payments · 销售明细</span></td><td>SumUp</td><td>整月销售明细，刷卡+现金都在里面</td></tr>
+      <tr><td><b>03</b></td><td>EPASSI Tilityksen yhteenveto<br><span style="color:#888;font-size:12px">Settlement summary · 结算汇总</span></td><td>ePassi</td><td>认准日期最早、Toimipistemaksu 有 3,14 的那一行</td></tr>
+      <tr><td><b>04</b></td><td>EPASSI Palvelumaksun lasku<br><span style="color:#888;font-size:12px">Service fee invoice · 服务费发票</span></td><td>ePassi</td><td>与 03 同一行，点 Palvelumaksun lasku (PDF)</td></tr>
+      <tr><td><b>05</b></td><td>EPASSI 整月交易记录<br><span style="color:#888;font-size:12px">Excel / CSV</span></td><td>ePassi</td><td>独立查询页，不是 Tilityshistoria！逐笔明细必须交</td></tr>
+      <tr><td><b>06</b> <span class="badge warn">条件</span></td><td>EDENRED Mobiilimaksut<br><span style="color:#888;font-size:12px">Mobile payments</span></td><td>Edenred</td><td>仅当月有 APP 手机付款时才交</td></tr>
+    </table>
+    <div class="tip">⚠️ ePassi 固定三份缺一不可：<b>03 结算汇总 + 04 服务费发票 + 05 整月交易记录</b>。03 是会计要求新增的，不能用它替代 05 的逐笔明细。</div>
+  </section>
+
+  <section>
+    <h2>01 · SUMUP Tilitysraportti（结算报表）</h2>
+    <ul>
+      <li><b>平台</b>：SumUp Dashboard（me.sumup.com）</li>
+      <li><b>点击路径</b>：<code>Reporting → Download report → 选择上个月 → Payouts → PDF</code></li>
+      <li><b>用途</b>：给会计核对银行结算批次和刷卡手续费</li>
+      <li><b>是否含现金</b>：否，只管结算与手续费</li>
+      <li><b>规则</b>：每月必交，即使当月没有结算也保留平台生成的报表</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>02 · SUMUP Myynnit（销售明细）</h2>
+    <ul>
+      <li><b>平台</b>：SumUp Dashboard（me.sumup.com）</li>
+      <li><b>点击路径</b>：<code>Reporting → Download report → 选择上个月 → Payments / Myynnit → 下载</code></li>
+      <li><b>用途</b>：给会计查看当月销售明细</li>
+      <li><b>是否含现金</b>：<b>是</b>，现金已包含在内，<b>不要再做 Cash Excel</b></li>
+    </ul>
+    <div class="tip">💡 SumUp 共 2 份文件（01+02），现金已在 02 里面，不需要第三份现金表。</div>
+  </section>
+
+  <section>
+    <h2>03 · EPASSI Tilityksen yhteenveto（结算汇总）</h2>
+    <ul>
+      <li><b>怎么找</b>：找目标月份<b>日期最早</b>、并且 <code>Toimipistemaksu</code> 有 <b>3,14</b> 的那一行</li>
+      <li><b>点哪个</b>：点这一行的<b>第一个</b> <code>(PDF) »</code>（页面上只显示"(PDF) »"，不写文件名，认准第一个就行）</li>
+      <li><b>不用</b>在页面上找"Tilityksen yhteenveto"这几个字</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>04 · EPASSI Palvelumaksun lasku（服务费发票）</h2>
+    <ul>
+      <li>在与第 03 份<b>相同的一行</b></li>
+      <li>点 <code>Palvelumaksun lasku (PDF) »</code> 下载</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>05 · EPASSI 整月交易记录（Excel / CSV）</h2>
+    <div class="tip">⚠️ 这是<b>独立的交易查询页面</b>，第 05 份<b>不在</b>第 03、04 份用的 Tilityshistoria（结算历史）里下载！</div>
+    <ol>
+      <li><b>选择完整月份</b>：同时设置开始日期和结束日期，范围必须覆盖整个月<br>示例：<code>01.09.2026 - 30.09.2026</code>（9 月 1 日至 9 月 30 日）</li>
+      <li><b>先查询</b>：日期选好后，先点"查询 / Search"</li>
+      <li><b>再下载</b>：结果出现后点"下载 / Download"，导出 Excel 或 CSV</li>
+      <li><b>核对范围</b>：打开文件确认起止日期覆盖整个月，再交给会计</li>
+    </ol>
+    <div class="tip">🚫 不要从 Tilityshistoria 下载第 05 份，也不要用第 03 份结算汇总替代它。</div>
+  </section>
+
+  <section>
+    <h2>06 · EDENRED Mobiilimaksut（条件文件）<span class="badge warn">有手机付款才交</span></h2>
+    <ul>
+      <li><b>平台</b>：Edenred Kumppaniportaali（kumppani.edenred.fi）</li>
+      <li><b>点击路径</b>：<code>Kumppaniportaali → Mobiilimaksut → 时间范围选上个月 → Vie PDF / Vie CSV</code></li>
+      <li><b>用途</b>：当月通过 Edenred APP 收到的手机付款明细</li>
+      <li><b>规则</b>：只有当月发生 Edenred APP 手机付款时才交，没有就不交这份</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>📤 交付</h2>
+    <ul>
+      <li>逐个上传到 <b>eTasku</b> documents（https://etasku.fi/login/）</li>
+      <li>发票只传官方原件，不自己合成 PDF</li>
+      <li>9 月 VAT €635.40，2026-11-12 到期，从预存 €3000 扣</li>
+    </ul>
+  </section>
+</main>
+</body>
+</html>
