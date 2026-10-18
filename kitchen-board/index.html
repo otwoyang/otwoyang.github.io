@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>厨房看板</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, "PingFang SC", sans-serif; background: #1a1a1a; color: #fff; padding: 12px; }
+  h1 { font-size: 20px; text-align: center; margin-bottom: 12px; color: #ffd60a; }
+  .status-bar { text-align: center; font-size: 12px; color: #888; margin-bottom: 12px; }
+  .columns { display: flex; gap: 10px; }
+  .col { flex: 1; background: #2a2a2a; border-radius: 10px; padding: 10px; min-height: 200px; }
+  .col h2 { font-size: 16px; text-align: center; margin-bottom: 10px; padding: 6px; border-radius: 6px; }
+  .col.waiting h2 { background: #ff9f0a; color: #000; }
+  .col.cooking h2 { background: #0a84ff; color: #fff; }
+  .col.done h2 { background: #30d158; color: #000; }
+  .order { background: #3a3a3a; border-radius: 8px; padding: 10px; margin-bottom: 8px; }
+  .order .num { font-size: 18px; font-weight: bold; color: #ffd60a; }
+  .order .dish { font-size: 15px; margin: 4px 0; }
+  .order .time { font-size: 12px; color: #888; }
+  .order .amount { font-size: 14px; color: #30d158; }
+  #setup { background: #2a2a2a; border-radius: 10px; padding: 20px; max-width: 400px; margin: 40px auto; }
+  #setup input { width: 100%; padding: 10px; margin: 8px 0; border-radius: 6px; border: 1px solid #555; background: #1a1a1a; color: #fff; font-size: 14px; }
+  #setup button { width: 100%; padding: 12px; background: #0a84ff; color: #fff; border: none; border-radius: 8px; font-size: 16px; margin-top: 10px; }
+  .hidden { display: none; }
+  #error { background: #ff453a; color: #fff; padding: 10px; border-radius: 8px; margin-bottom: 12px; font-size: 14px; text-align: center; }
+</style>
+</head>
+<body>
+<div id="setup">
+  <h1>🍣 厨房看板设置</h1>
+  <p style="color:#888;font-size:13px;margin-bottom:12px;">首次使用请输入 SumUp API Key（只存本机）</p>
+  <input type="password" id="apiKey" placeholder="SumUp API Key">
+  <button onclick="saveKey()">保存并开始</button>
+</div>
+
+<div id="board" class="hidden">
+  <h1>🍣 厨房看板</h1>
+  <div class="status-bar" id="statusBar">加载中...</div>
+  <div id="errorMsg"></div>
+  <div class="columns">
+    <div class="col waiting"><h2>⏳ 待做</h2><div id="colWaiting"></div></div>
+    <div class="col cooking"><h2>🔥 制作中</h2><div id="colCooking"></div></div>
+    <div class="col done"><h2>✅ 完成</h2><div id="colDone"></div></div>
+  </div>
+</div>
+
+<script>
+const MERCHANT = 'MCTU2H9D';
+const API_BASE = 'https://api.sumup.com/v2.1';
+let apiKey = '';
+
+function saveKey() {
+  const k = document.getElementById('apiKey').value.trim();
+  if (!k) { alert('请输入 API Key'); return; }
+  apiKey = k;
+  document.getElementById('setup').classList.add('hidden');
+  document.getElementById('board').classList.remove('hidden');
+  refresh();
+  setInterval(refresh, 30000);
+}
+
+async function refresh() {
+  const statusBar = document.getElementById('statusBar');
+  try {
+    const today = new Date().toISOString().split('T')[0];
+    const url = `${API_BASE}/merchants/${MERCHANT}/transactions/history?order=descending&limit=50`;
+    const resp = await fetch(url, {
+      headers: { 'Authorization': 'Bearer ' + apiKey }
+    });
+    if (!resp.ok) throw new Error('API ' + resp.status);
+    const data = await resp.json();
+    const items = data.items || [];
+    
+    // Filter today's transactions
+    const todayItems = items.filter(t => {
+      const d = new Date(t.timestamp);
+      return d.toISOString().split('T')[0] === today;
+    });
+
+    render(todayItems);
+    statusBar.textContent = '更新于 ' + new Date().toLocaleTimeString('zh-CN') + ' · ' + todayItems.length + ' 单';
+    document.getElementById('errorMsg').innerHTML = '';
+  } catch (e) {
+    document.getElementById('errorMsg').innerHTML = '<div id="error">⚠️ 获取失败: ' + e.message + '（可能是 CORS 限制）</div>';
+    statusBar.textContent = '获取失败，30秒后重试';
+  }
+}
+
+function render(items) {
+  // Simple: all today's orders go to waiting (status tracking needs local state)
+  // For v1, show all as waiting list
+  const waiting = items.filter(t => t.status === 'SUCCESSFUL' || t.status === 'PAID');
+  
+  const html = waiting.map(t => {
+    const time = new Date(t.timestamp).toLocaleTimeString('zh-CN', {hour:'2-digit', minute:'2-digit'});
+    const amount = t.amount ? t.amount.toFixed(2) : '?';
+    const products = (t.products || []).map(p => p.name).join(', ') || 'SumUp 订单';
+    return `<div class="order">
+      <div class="num">#${t.transaction_code || t.id.slice(-6)}</div>
+      <div class="dish">${products}</div>
+      <div class="amount">€${amount}</div>
+      <div class="time">${time}</div>
+    </div>`;
+  }).join('');
+
+  document.getElementById('colWaiting').innerHTML = html || '<p style="color:#666;text-align:center;">暂无订单</p>';
+  document.getElementById('colCooking').innerHTML = '<p style="color:#666;text-align:center;">-</p>';
+  document.getElementById('colDone').innerHTML = '<p style="color:#666;text-align:center;">-</p>';
+}
+</script>
+</body>
+</html>
