@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>eTasku 收据上传 · Accountant · 数字世界地图</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; background: #f5f5f5; color: #333; }
+  header { background: #2c3e50; color: white; padding: 20px; }
+  header a { color: #7fb3d5; text-decoration: none; font-size: 14px; }
+  header h1 { font-size: 24px; margin: 8px 0 4px; }
+  header p { opacity: 0.8; font-size: 14px; }
+  main { max-width: 860px; margin: 20px auto; padding: 0 16px 40px; }
+  section { background: white; border-radius: 8px; padding: 20px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+  h2 { font-size: 18px; margin-bottom: 12px; color: #2c3e50; }
+  h3 { font-size: 16px; margin: 16px 0 8px; color: #34495e; border-left: 4px solid #3498db; padding-left: 10px; }
+  li, p { line-height: 1.8; }
+  ul, ol { padding-left: 20px; }
+  ul li, ol li { margin-bottom: 6px; }
+  code { background: #f0f0f0; padding: 2px 6px; border-radius: 4px; font-size: 13px; }
+  .badge { display: inline-block; background: #3498db; color: white; font-size: 12px; padding: 2px 8px; border-radius: 10px; margin-left: 8px; }
+  .badge.warn { background: #e67e22; }
+  .tip { background: #fef9e7; border-left: 4px solid #f1c40f; padding: 12px; margin: 12px 0; border-radius: 0 6px 6px 0; font-size: 14px; line-height: 1.7; }
+</style>
+</head>
+<body>
+<header>
+  <a href="/">← 返回地图</a>
+  <h1>📄 eTasku 收据上传</h1>
+  <p>两种上传方式：浏览器直接传 / 浏览器被禁时的邮件备用方案</p>
+</header>
+<main>
+  <section>
+    <h2>方案1：浏览器直接上传 <span class="badge">常规</span></h2>
+    <ol>
+      <li>登录 <code>https://etasku.fi/login/</code>（公司 Guaimost，用户 Qi Yang）</li>
+      <li>点左上角 <b>RECEIPT</b> 按钮（不是 documents）</li>
+      <li>点 <b>New receipt</b>，点 <b>Add a File</b> 选文件上传</li>
+      <li>填写三样：<b>日期</b>、<b>金额</b>、<b>供应商名字</b>（分类不重要）</li>
+      <li>保存，收据自动转给会计</li>
+    </ol>
+    <div class="tip">⚠️ 上传只保证三样对——日期、金额、供应商名字。税率等字段能选就选，不能选空着，会计处理。</div>
+  </section>
+
+  <section>
+    <h2>方案2：邮件发送到 eTasku <span class="badge warn">备用</span></h2>
+    <p>当浏览器被管理员策略禁止访问本地文件（点 "Add a File" 没反应，提示 "Access to local files on your machine is disabled by your administrator"）时用此方案。</p>
+    <h3>步骤</h3>
+    <ol>
+      <li><b>发件邮箱</b>必须是 eTasku 注册邮箱（<code>guaimost@gmail.com</code>），eTasku 靠发件地址识别身份</li>
+      <li><b>收件人</b>：<code>oma@etasku.fi</code></li>
+      <li><b>附件</b>：jpg 或 pdf 格式的收据</li>
+      <li><b>邮件主题</b>会成为收据标题</li>
+      <li>邮件发出后，AI 进 eTasku 浏览器找到那条新收据，把<b>日期</b>、<b>金额</b>、<b>供应商</b>等数据改对填全（上传文件被禁，但改数据没被禁）</li>
+    </ol>
+    <h3>注意</h3>
+    <ul>
+      <li>收据日期记为<b>发邮件当天</b>，不是小票上的日期，事后要手动改回正确日期</li>
+      <li>eTasku 用 OCR 读附件，金额可能读不出来，要去核对补全</li>
+      <li>已实测可用（2026-10-18）</li>
+    </ul>
+  </section>
+</main>
+</body>
+</html>
