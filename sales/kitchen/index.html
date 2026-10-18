@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>APP-Kitchen · 数字世界地图</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; background: #f5f5f5; color: #333; }
+  header { background: #2c3e50; color: white; padding: 20px; }
+  header a { color: #7fb3d5; text-decoration: none; font-size: 14px; }
+  header h1 { font-size: 24px; margin: 8px 0 4px; }
+  header p { opacity: 0.8; font-size: 14px; }
+  main { max-width: 800px; margin: 20px auto; padding: 0 16px 40px; }
+  section { background: white; border-radius: 8px; padding: 20px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+  h2 { font-size: 18px; margin-bottom: 12px; color: #2c3e50; }
+  h3 { font-size: 15px; margin: 14px 0 8px; color: #555; }
+  li { line-height: 1.8; margin-left: 20px; }
+  code { background: #f0f0f0; padding: 2px 6px; border-radius: 4px; font-size: 13px; }
+  table { width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 14px; }
+  th, td { text-align: left; padding: 8px; border-bottom: 1px solid #eee; line-height: 1.6; }
+  th { color: #555; }
+</style>
+</head>
+<body>
+<header>
+  <a href="/">← 返回数字世界地图</a>
+  <h1>🍳 APP-Kitchen</h1>
+  <p>厨房订单看板：SumUp + ePassi + Edenred 三源汇入，实时显示当日订单</p>
+</header>
+<main>
+  <section>
+    <h2>📦 安装位置（Mac mini）</h2>
+    <ul>
+      <li><code>~/Documents/APP-Kitchen/APP-Kitchen.app</code> —— 主程序，双击打开</li>
+      <li><code>~/Documents/APP-Kitchen/kitchen.py</code> —— 后端脚本（Python 标准库，无第三方依赖）</li>
+      <li><code>~/Documents/APP-Kitchen/kitchen.db</code> —— 本地订单库（SQLite）</li>
+    </ul>
+  </section>
+  <section>
+    <h2>🔑 用的权限和密码</h2>
+    <table>
+      <tr><th>名称</th><th>存哪</th><th>从哪来</th></tr>
+      <tr><td>SumUp API Key</td><td><code>~/.sumup_api_key</code></td><td>从 MacBook Air 同路径拷过来；源头是 SumUp 商户后台 API Keys 页</td></tr>
+      <tr><td>Gmail 应用专用密码</td><td>Mac 钥匙串（服务名 APP-Sales，account=gmail_user / gmail_apppw）</td><td><code>https://myaccount.google.com/apppasswords</code> 生成 16 位；首次运行需本机点"允许"钥匙串访问</td></tr>
+    </table>
+    <p style="margin-top:8px;font-size:14px;color:#666;">数据源头是 SumUp API + Gmail（云端权威），本地 db 只是缓存，任何设备拿 key 都能重抓。</p>
+  </section>
+  <section>
+    <h2>📱 各设备分工与用法</h2>
+    <table>
+      <tr><th>设备</th><th>干什么</th><th>怎么用</th></tr>
+      <tr><td><b>Mac mini</b>（家里，24h）</td><td>总数据中心：跑看板 + 存 kitchen.db；也是 APP-Sales 的家</td><td>双击 <code>APP-Kitchen.app</code> 打开；iPad 随航投屏可看</td></tr>
+      <tr><td><b>鸿蒙平板</b>（店里厨房）</td><td>纯显示端：看当日订单，有 done 按钮（状态只在内存，每天自动清零，不存盘）</td><td>装 <code>app-kitchen-signed.apk</code>，打开即用，自己从 SumUp/Gmail 拉数据</td></tr>
+      <tr><td><b>iPad</b></td><td>显示器：随航投屏看 Mac mini 上的看板</td><td>Sidecar 连 Mac mini 即可（Tauri 不支持 iOS，无原生 App）</td></tr>
+      <tr><td><b>MacBook Air</b></td><td>退役备份：原件保留，不再跑业务</td><td>不用动</td></tr>
+    </table>
+  </section>
+  <section>
+    <h2>⚙️ 工作原理</h2>
+    <ul>
+      <li>每 10 秒轮询 SumUp API，每 30 秒轮询 Gmail（ePassi / Edenred 邮件）</li>
+      <li>订单状态两态：waiting → done（双击卡片流转）</li>
+      <li>只显示芬兰时区当日订单，跨天自动消失（库中数据保留）</li>
+      <li>看板上"Fetch &amp; save"按钮会调 APP-Sales 的报表脚本（写 pos.db 与生意指标.xlsx，不回写看板）</li>
+      <li>零端口设计：不开放任何网络端口</li>
+    </ul>
+  </section>
+</main>
+</body>
+</html>
