@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>店里电台制作方法 · 数字世界地图</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; background: #f5f5f5; color: #333; }
+  header { background: #2c3e50; color: white; padding: 20px; }
+  header a { color: #7fb3d5; text-decoration: none; font-size: 14px; }
+  header h1 { font-size: 24px; margin: 8px 0 4px; }
+  header p { opacity: 0.8; font-size: 14px; }
+  main { max-width: 800px; margin: 20px auto; padding: 0 16px 40px; }
+  section { background: white; border-radius: 8px; padding: 20px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+  h2 { font-size: 18px; margin-bottom: 12px; color: #2c3e50; }
+  li { line-height: 1.8; margin-left: 20px; }
+  code { background: #f0f0f0; padding: 2px 6px; border-radius: 4px; font-size: 13px; }
+</style>
+</head>
+<body>
+<header>
+  <a href="/">← 返回数字世界地图</a>
+  <h1>📻 店里电台制作方法</h1>
+  <p>每日混音节目：17:00 生产、19:00 上传，店里 5–6 点切鱼和 10:30–14:30 看店时听</p>
+</header>
+<main>
+  <section>
+    <h2>⏰ 时间线</h2>
+    <ul>
+      <li><b>17:00</b> 自动生产次日节目（cron <code>shop-radio-daily-update</code>）</li>
+      <li><b>19:00</b> 自动上传，只跟用户说"已上传"</li>
+      <li>时长：约 2.3–2.5 小时（用户接受，不补时长）</li>
+    </ul>
+  </section>
+  <section>
+    <h2>🎙️ 主持人与声音</h2>
+    <ul>
+      <li>主持人"阿莽"，固定男声 <code>avocado_v2:MAI_03</code></li>
+      <li>人声（TTS、UP视频、相声、小说）提高音量，音乐降低</li>
+      <li>TTS 文案用短句（一句话只讲一件事，长句拆开，防长句重复词）</li>
+    </ul>
+  </section>
+  <section>
+    <h2>📝 内容构成</h2>
+    <ul>
+      <li>短剧（偏好"被冤枉→出气/反驳/报复"爽剧）</li>
+      <li>音乐：classic 老歌（蔡琴、陈淑桦、张信哲、林忆莲、王菲、Whitney Houston、Mariah Carey 等）；禁忌：不要陈翔六点半、不要张国荣；相声多加</li>
+      <li>轻资讯/解说/小故事 + 近 1–2 天 Feed 挑 3–5 条转阿莽口播（生意、快递、睡眠分析预报加强）</li>
+      <li>B 站三 UP（电丸科技、安德不翻车、老戴Donald）：只用<b>新投稿</b>，播过的（played_bv）不重复；完整版切数段穿插；<b>只传分段、不拼整版</b></li>
+      <li>有声小说《我在末日求生记》每天一集、连载不断档</li>
+      <li>编排：时效性内容（天气、新闻、生意预报、快递动态）放前两小时；文件名带序号前缀使音乐与语音穿插</li>
+      <li>每段 👍👎 静默 POST 到 Google 表单投票箱，点踩自动跳过</li>
+    </ul>
+  </section>
+  <section>
+    <h2>🔧 TTS 质量控制</h2>
+    <ul>
+      <li>合成工具：<code>~/workspace/shop-radio/tools/tts_synth_verify.py</code>（逐句合成+每句验时长，中文 3.5 字/秒、超 1.5 倍判重复丢弃重试）</li>
+      <li>上传前再验：<code>tools/tts_check_segments.py</code>，REJECT 的不许上传</li>
+      <li>每期合成后必须做时长 sanity check（中文约 3–4 字/秒估预期）</li>
+    </ul>
+  </section>
+  <section>
+    <h2>☁️ 上传方法（pCloud）</h2>
+    <ul>
+      <li>只用 ormandme 账号（给助手单独注册的），<b>绝不碰用户主账号</b></li>
+      <li>目标：「!!AI」文件夹 → <code>radio/日期/</code>（旧 Radio 链接已作废）</li>
+      <li>定位永远用 <b>folderid</b> 直接拼 URL，绝不按名字搜索（2026-10-09 传错文件夹教训）</li>
+      <li>API：<code>eapi.pcloud.com</code>（api.pcloud.com 返回 7001），curl 需 <code>--http1.1</code></li>
+      <li>单文件约 120MB 上限（免费号分享链接限制），超限用户自己传</li>
+      <li>19:00 传完只说"已上传"，不提前发名单</li>
+    </ul>
+  </section>
+</main>
+</body>
+</html>
