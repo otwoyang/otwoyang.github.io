@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>数字世界地图</title>
+<title>Digital World Map</title>
 <script src="https://d3js.org/d3.v7.min.js"></script>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -19,8 +19,8 @@
 </head>
 <body>
 <header>
-  <h1>🗺️ 数字世界地图</h1>
-  <p>我的数字世界大纲 · 点击节点进入子页面</p>
+  <h1>🗺️ Digital World Map</h1>
+  <p>Click a node to enter its page</p>
 </header>
 
 <div id="tree"></div>
@@ -30,21 +30,24 @@ const data = {
   name: "",
   children: [
     {
-      name: "note",
-      desc: "个人笔记系统（Memos），记录日常与工作",
+      name: "Notes",
       url: "/notes/"
     },
     {
-      name: "工作",
+      name: "Work",
       children: []
     },
     {
-      name: "生活",
+      name: "Life",
       children: [
         {
-          name: "炒菜鸡",
-          desc: "苏泊尔小C主厨机菜谱站",
-          url: "/Chaocaiji/"
+          name: "Food",
+          children: [
+            {
+              name: "Chaocaiji",
+              url: "/Chaocaiji/"
+            }
+          ]
         }
       ]
     }
