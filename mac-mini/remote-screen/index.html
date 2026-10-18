@@ -58,15 +58,19 @@
   <section>
     <h2>📱 iPad 连接方法（随航备胎）</h2>
     <ul>
-      <li>iPad 装 VNC 客户端（如 RealVNC Viewer，免费）</li>
-      <li>iPad 也需装 Tailscale 并登录同一账号</li>
-      <li>VNC 地址填 <code>100.83.160.13</code>，输 Mac mini 用户名密码</li>
+      <li>工具：<b>RealVNC Viewer</b>（App Store 免费）+ <b>Tailscale</b>（同一账号登录）</li>
+      <li>VNC 地址填 <code>100.83.160.13</code>（注意是 .83 不是 .03）</li>
+      <li>Interaction 必须选 <b>Touch</b>（Mouse 模式点不中输入框）</li>
+      <li>先点密码框聚焦，再点工具栏键盘图标打字，打完点回车（别点屏幕，否则键盘缩回去）</li>
     </ul>
   </section>
   <section>
     <h2>⚠️ 注意</h2>
     <ul>
-      <li>MacBook Air 必须先登 Tailscale，否则 <code>100.83.160.13</code> 不可达（2026-10-18 踩过：没登录就连，报"无法通信"）</li>
+      <li>MacBook Air / iPad 必须先登 Tailscale，否则 <code>100.83.160.13</code> 不可达（2026-10-18 踩过：没登录就连，报"无法通信"）</li>
+      <li><b>VNC 密码只认 8 位</b>：Mac mini 上"VNC 显示器可用密码控制屏幕"设的密码必须 ≤8 位，超了就对不上（2026-10-18 实测）</li>
+      <li>第三方 VNC 连上后看到的是锁屏，需再输一次 Mac 开机密码；Mac 自带的屏幕共享（MacBook Air 用）走系统认证，直进桌面不用二次输</li>
+      <li>macOS 屏幕共享支持多人同时连，不独占</li>
       <li>Muse（SSH）用不了 VNC——SSH 碰不到 GUI，只能命令行</li>
     </ul>
   </section>
