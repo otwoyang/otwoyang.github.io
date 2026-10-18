@@ -27,38 +27,25 @@
 
 <script>
 const data = {
-  name: "数字世界",
-  desc: "我的数字世界大纲，所有项目、数据、规则的总入口。",
+  name: "",
   children: [
     {
-      name: "炒菜鸡",
-      desc: "苏泊尔小C主厨机菜谱站",
-      url: "/Chaocaiji/",
-      rules: [
-        "只用 Lidl/Prisma 能买到的食材",
-        "备菜极简，切了直接下锅",
-        "酱料 3-5 种封顶",
-        "好吃优先，一锅出优先但避重油"
-      ],
-      dataFiles: [
-        "网站源码：~/workspace/chaocaiji-site/",
-        "GitHub 仓库：otwoyang/Chaocaiji",
-        "线上地址：https://otwoyang.github.io/Chaocaiji/"
-      ]
+      name: "note",
+      desc: "个人笔记系统（Memos），记录日常与工作",
+      url: "/notes/"
     },
     {
-      name: "Notes",
-      desc: "个人笔记系统（Memos），记录日常与工作",
-      url: "/notes/",
-      rules: [
-        "用 ## 标签分类",
-        "重要事项打 #todo",
-        "Muse 可读写，自动整理"
-      ],
-      dataFiles: [
-        "数据库：~/workspace/memos/data/memos_prod.db (SQLite)",
-        "Mac 备份：~/Documents/Project-Notes/Data/memos_prod.db",
-        "共 70 条笔记"
+      name: "工作",
+      children: []
+    },
+    {
+      name: "生活",
+      children: [
+        {
+          name: "炒菜鸡",
+          desc: "苏泊尔小C主厨机菜谱站",
+          url: "/Chaocaiji/"
+        }
       ]
     }
   ]
@@ -74,21 +61,25 @@ const root = d3.hierarchy(data);
 tree(root);
 
 g.selectAll(".link")
-  .data(root.links()).enter().append("path")
+  .data(root.links().filter(d => d.source.depth > 0)).enter().append("path")
   .attr("class", "link")
-  .attr("d", d3.linkHorizontal().x(d => d.y).y(d => d.x));
+  .attr("d", d => {
+    const s = {x: d.source.x, y: (d.source.depth - 1) * 200};
+    const t = {x: d.target.x, y: (d.target.depth - 1) * 200};
+    return `M${s.y},${s.x}C${(s.y + t.y) / 2},${s.x} ${(s.y + t.y) / 2},${t.x} ${t.y},${t.x}`;
+  });
 
 const node = g.selectAll(".node")
-  .data(root.descendants()).enter().append("g")
+  .data(root.descendants().filter(d => d.depth > 0)).enter().append("g")
   .attr("class", "node")
-  .attr("transform", d => `translate(${d.y},${d.x})`)
+  .attr("transform", d => `translate(${(d.depth - 1) * 200},${d.x})`)
   .on("click", (event, d) => {
     if (d.data.url) window.location.href = d.data.url;
   });
 
 node.append("circle")
-  .attr("r", d => d.depth === 0 ? 12 : 8)
-  .attr("fill", d => d.depth === 0 ? "#e74c3c" : "#3498db");
+  .attr("r", d => d.depth === 1 ? 10 : 8)
+  .attr("fill", d => d.depth === 1 ? "#e74c3c" : "#3498db");
 
 node.append("text")
   .attr("dy", ".35em")
