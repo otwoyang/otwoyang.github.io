@@ -15,26 +15,15 @@
   .node circle { cursor: pointer; }
   .node text { font-size: 14px; }
   .link { fill: none; stroke: #ccc; stroke-width: 2px; }
-  #detail { max-width: 1000px; margin: 0 auto 40px; padding: 20px; background: white; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); display: none; }
-  #detail h2 { margin-bottom: 12px; color: #2c3e50; }
-  #detail h3 { margin: 16px 0 8px; color: #34495e; font-size: 16px; }
-  #detail p, #detail li { line-height: 1.8; color: #555; }
-  #detail ul { padding-left: 20px; }
-  #detail a { color: #3498db; }
 </style>
 </head>
 <body>
 <header>
   <h1>🗺️ 数字世界地图</h1>
-  <p>我的数字世界大纲 · 点击节点查看详情</p>
+  <p>我的数字世界大纲 · 点击节点进入子页面</p>
 </header>
 
 <div id="tree"></div>
-
-<div id="detail">
-  <h2 id="detail-title"></h2>
-  <div id="detail-content"></div>
-</div>
 
 <script>
 const data = {
@@ -92,7 +81,9 @@ const node = g.selectAll(".node")
   .data(root.descendants()).enter().append("g")
   .attr("class", "node")
   .attr("transform", d => `translate(${d.y},${d.x})`)
-  .on("click", (event, d) => showDetail(d.data));
+  .on("click", (event, d) => {
+    if (d.data.url) window.location.href = d.data.url;
+  });
 
 node.append("circle")
   .attr("r", d => d.depth === 0 ? 12 : 8)
@@ -104,27 +95,6 @@ node.append("text")
   .attr("text-anchor", d => d.children ? "end" : "start")
   .text(d => d.data.name);
 
-function showDetail(d) {
-  document.getElementById("detail").style.display = "block";
-  document.getElementById("detail-title").textContent = d.name;
-  let html = `<p>${d.desc || ""}</p>`;
-  if (d.url) html += `<p><a href="${d.url}" target="_blank">→ 打开 ${d.name}</a></p>`;
-  if (d.rules) {
-    html += "<h3>📏 规则</h3><ul>";
-    d.rules.forEach(r => html += `<li>${r}</li>`);
-    html += "</ul>";
-  }
-  if (d.dataFiles) {
-    html += "<h3>💾 数据文件</h3><ul>";
-    d.dataFiles.forEach(f => html += `<li><code>${f}</code></li>`);
-    html += "</ul>";
-  }
-  document.getElementById("detail-content").innerHTML = html;
-  document.getElementById("detail").scrollIntoView({ behavior: "smooth" });
-}
-
-// 默认显示根节点详情
-showDetail(data);
 </script>
 </body>
 </html>
