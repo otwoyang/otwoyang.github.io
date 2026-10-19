@@ -96,6 +96,13 @@ SSH
 - pCloud Drive 桌面端：用户自己装
 
 ---
+APP-Kitchen Gmail 抓取修复（2026-10-19）
+- 故障：厨房看板只显示 SumUp 订单，ePassi 邮件一直抓不到
+- 根因：钥匙串里 Gmail 凭证是 otwoyang@gmail.com，但 ePassi 邮件发到 guaimost@gmail.com，登错邮箱
+- 修复：钥匙串 gmail_user → guaimost@gmail.com，gmail_apppw → 新的应用专用密码（2026-10-19 生成）
+- 验证：重启 APP-Kitchen 后点 Fetch & save，6 单 ePassi 订单全部进来，TOTAL €91.00
+
+---
 后续待办
 - Neolink、屏幕共享</pre>
   </section>
