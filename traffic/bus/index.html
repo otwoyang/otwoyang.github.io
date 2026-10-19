@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bus - Map</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; background: #f5f5f5; color: #333; padding: 40px 20px; }
+  main { max-width: 700px; margin: 0 auto; background: white; border-radius: 12px; padding: 32px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); }
+  h1 { font-size: 22px; margin-bottom: 8px; }
+  .back { margin-bottom: 20px; }
+  .back a { color: #1a73e8; text-decoration: none; font-size: 14px; }
+  h2 { font-size: 18px; margin: 28px 0 12px; padding-bottom: 8px; border-bottom: 1px solid #eee; }
+  table { width: 100%; border-collapse: collapse; font-size: 15px; margin: 12px 0; }
+  th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid #f0f0f0; }
+  th { background: #fafafa; font-weight: 600; }
+  .note { font-size: 14px; color: #666; margin: 8px 0; line-height: 1.6; }
+  code { background: #f5f5f5; padding: 2px 6px; border-radius: 4px; font-size: 13px; }
+  ul { padding-left: 20px; line-height: 2; font-size: 15px; }
+</style>
+</head>
+<body>
+<main>
+  <div class="back"><a href="/">← Map</a></div>
+  <h1>🚌 Bus</h1>
+  <p class="note">Tampere 公交查询：Digitransit API + 常用地址簿</p>
+
+  <h2>API</h2>
+  <table>
+    <tr><th>项目</th><th>说明</th></tr>
+    <tr><td>服务</td><td>Digitransit（HSL/Fintraffic 开放数据）</td></tr>
+    <tr><td>订阅</td><td>digitransit-developer-api（Active）</td></tr>
+    <tr><td>账号</td><td>otwoyang@gmail.com</td></tr>
+    <tr><td>请求头</td><td><code>digitransit-subscription-key</code></td></tr>
+    <tr><td>Routing（线路规划）</td><td><code>https://api.digitransit.fi/routing/v2/waltti/gtfs/v1</code>（Tampere 属 Waltti 区）</td></tr>
+    <tr><td>Geocoding（地址查坐标）</td><td><code>https://api.digitransit.fi/geocoding/v1/search</code></td></tr>
+    <tr><td>凭证</td><td>存在保险库 custom.digitransit，脚本经动态凭证调用</td></tr>
+    <tr><td>助手脚本</td><td><code>~/workspace/custom-connectors/custom.digitransit/bin/route.py</code></td></tr>
+  </table>
+  <p class="note">用法：用户说"去 Bauhaus"或"回店里"，助手直接用 API 查路线，不用用户自己翻 ReittiGPS。</p>
+
+  <h2>常用线路（去店里方向）</h2>
+  <table>
+    <tr><th>线路</th><th>方向</th><th>备注</th></tr>
+    <tr><td>31</td><td>→ Keskustori</td><td>Hatanpään koulu 可上车，直达市中心</td></tr>
+    <tr><td>32</td><td>→ Keskustori</td><td>Härmälä 方向进城</td></tr>
+    <tr><td>30</td><td>→ Keskustori D</td><td>Talvitie / Hatanpää 进城</td></tr>
+    <tr><td>12</td><td>→ Sorin aukio</td><td>下车步行几分钟到店</td></tr>
+    <tr><td>36B</td><td>Hervanta ↔ Pirkkala</td><td>不进市中心，别坐错</td></tr>
+  </table>
+
+  <h2>地址簿 Address Book</h2>
+  <table>
+    <tr><th>名称</th><th>地址</th></tr>
+    <tr><td>Work（店）</td><td>Tampereen Kauppahalli，Sushibar Umami</td></tr>
+    <tr><td>Home（家）</td><td>Aleksanterinkatu 29 B 19, 33100 Tampere</td></tr>
+    <tr><td>Noodle Lab</td><td>Sammonkatu 46, Tampere</td></tr>
+    <tr><td>Biang</td><td>Hämeenkatu 3, 33100 Tampere</td></tr>
+    <tr><td>Prisma Kaleva</td><td>Sammonkatu 75, 33540 Tampere</td></tr>
+    <tr><td>Bauhaus</td><td>Palmrothintie 4, Pirkkala</td></tr>
+    <tr><td>Hervanta Duo</td><td>Pietilänkatu 2, 33720 Tampere</td></tr>
+    <tr><td>IKEA Tampere</td><td>Leppästensuonkatu 4, Tampere</td></tr>
+    <tr><td>Verkkokauppa Pirkkala</td><td>Saapastie 2, 33950 Pirkkala</td></tr>
+    <tr><td>Kespro</td><td>Mäntyhaantie 16, Tampere（进货）</td></tr>
+  </table>
+  <p class="note">更新日期：2026-10-19</p>
+</main>
+</body>
+</html>
