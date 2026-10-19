@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>店内摄像头 · 数字世界地图</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; background: #f5f5f5; color: #333; }
+  header { background: #2c3e50; color: white; padding: 20px; }
+  header a { color: #7fb3d5; text-decoration: none; font-size: 14px; }
+  header h1 { font-size: 24px; margin: 8px 0 4px; }
+  header p { opacity: 0.8; font-size: 14px; }
+  main { max-width: 800px; margin: 20px auto; padding: 0 16px 40px; }
+  section { background: white; border-radius: 8px; padding: 20px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+  h2 { font-size: 18px; margin-bottom: 12px; color: #2c3e50; }
+  li { line-height: 1.8; margin-left: 20px; }
+  code { background: #f0f0f0; padding: 2px 6px; border-radius: 4px; font-size: 13px; }
+  .status-ok { color: #27ae60; font-weight: bold; }
+</style>
+</head>
+<body>
+<header>
+  <a href="/">← 返回数字世界地图</a>
+  <h1>📷 店内摄像头</h1>
+  <p>Reolink E1 Pro 下班监控：Neolink 中转，Mac mini 承担</p>
+</header>
+<main>
+  <section>
+    <h2>📷 设备信息</h2>
+    <ul>
+      <li>型号：Reolink E1 Pro</li>
+      <li>UID：<code>9527000J7Y151GB2</code></li>
+      <li>固件：v3.1.0.4417_2412122130</li>
+      <li>位置：店内（Tampereen Kauppahalli）</li>
+    </ul>
+  </section>
+  <section>
+    <h2>✅ 当前状态 <span class="status-ok">（2026-10-19 已跑通）</span></h2>
+    <ul>
+      <li>Neolink 0.6.2 在 Mac mini 上运行正常</li>
+      <li>已通过 UID/P2P 连接并登录摄像头</li>
+      <li>RTSP 服务在 <code>0.0.0.0:8554</code> 监听</li>
+    </ul>
+  </section>
+  <section>
+    <h2>🔗 RTSP 地址（VLC 可直接打开）</h2>
+    <ul>
+      <li>主码流：<code>rtsp://100.83.160.13:8554/umami/main</code></li>
+      <li>子码流：<code>rtsp://100.83.160.13:8554/umami/sub</code></li>
+    </ul>
+  </section>
+  <section>
+    <h2>⚙️ 配置位置（Mac mini）</h2>
+    <ul>
+      <li>配置文件：<code>~/Documents/neolink/neolink.toml</code></li>
+      <li>程序：<code>/tmp/neolink/neolink_macos/neolink</code>（Intel 版，需 Rosetta 2）</li>
+      <li>依赖：官方 GStreamer 框架（/Library/Frameworks/GStreamer.framework）</li>
+      <li>日志：<code>~/Documents/neolink/neolink.log</code></li>
+    </ul>
+  </section>
+  <section>
+    <h2>🔧 安装过程（2026-10-19 实战记录）</h2>
+    <ul>
+      <li>Neolink 官方只有 Intel 版 Mac 二进制（v0.6.2），M4 需装 Rosetta 2：<code>softwareupdate --install-rosetta</code></li>
+      <li>brew 装的 GStreamer 是 ARM64 版，与 Intel 版 Neolink 不兼容——必须装<a href="https://gstreamer.freedesktop.org/download/">官网</a>的 universal pkg（149MB）</li>
+      <li>config 文件里 <code>bind</code> 必须带引号：<code>bind = "0.0.0.0"</code>，不带引号报 TOML 解析错</li>
+      <li>首次连接走 relay discovery，约 5 秒连上，日志显示 "Connected and logged in" 即成功</li>
+    </ul>
+  </section>
+  <section>
+    <h2>📝 待办</h2>
+    <ul>
+      <li>开机自启（LaunchAgent，常驻运行）</li>
+      <li>录像：下班后自动录，存 30 天自动清理</li>
+    </ul>
+  </section>
+</main>
+</body>
+</html>
