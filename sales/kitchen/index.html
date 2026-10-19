@@ -42,7 +42,7 @@
     <table>
       <tr><th>名称</th><th>存哪</th><th>从哪来</th></tr>
       <tr><td>SumUp API Key</td><td><code>~/.sumup_api_key</code></td><td>从 MacBook Air 同路径拷过来；源头是 SumUp 商户后台 API Keys 页</td></tr>
-      <tr><td>Gmail 应用专用密码</td><td>Mac 钥匙串（服务名 APP-Sales，account=gmail_user / gmail_apppw）</td><td><code>https://myaccount.google.com/apppasswords</code> 生成 16 位；首次运行需本机点"允许"钥匙串访问</td></tr>
+      <tr><td>Gmail 应用专用密码</td><td>Mac 钥匙串（服务名 APP-Sales，account=gmail_user / gmail_apppw）</td><td><code>https://myaccount.google.com/apppasswords</code> 生成 16 位；账号必须是 <b>guaimost@gmail.com</b>（ePassi 邮件发到这个邮箱）；首次运行需本机点"允许"钥匙串访问<br><span style="color:#30d158;">✅ 2026-10-19 修复：之前误配成 otwoyang@gmail.com，登错邮箱导致 ePassi 永远抓不到；已换成 guaimost@gmail.com 并更新应用专用密码，抓取恢复正常</span></td></tr>
     </table>
     <p style="margin-top:8px;font-size:14px;color:#666;">数据源头是 SumUp API + Gmail（云端权威），本地 db 只是缓存，任何设备拿 key 都能重抓。</p>
   </section>
