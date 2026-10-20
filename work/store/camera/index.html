@@ -23,7 +23,7 @@
 <header>
   <a href="/">← 返回数字世界地图</a>
   <h1>📷 店内摄像头</h1>
-  <p>Reolink E1 Pro 下班监控：Neolink 中转，Mac mini 承担</p>
+  <p>Reolink E1 Pro 下班监控：Mac mini 本地守护 + 区域运动检测 + Muse app 报警</p>
 </header>
 <main>
   <section>
@@ -32,15 +32,70 @@
       <li>型号：Reolink E1 Pro</li>
       <li>UID：<code>9527000J7Y151GB2</code></li>
       <li>固件：v3.1.0.4417_2412122130</li>
-      <li>位置：店内（Tampereen Kauppahalli）</li>
+      <li>位置：店内（Tampereen Kauppahalli），机位名 umami</li>
+      <li>服务器：店内 Mac mini（全部程序本地运行，不依赖云端）</li>
     </ul>
   </section>
   <section>
-    <h2>✅ 当前状态 <span class="status-ok">（2026-10-19 已跑通）</span></h2>
+    <h2>✅ 当前状态 <span class="status-ok">（2026-10-20 整套系统上线，试运行中）</span></h2>
     <ul>
-      <li>Neolink 0.6.2 在 Mac mini 上运行正常</li>
-      <li>已通过 UID/P2P 连接并登录摄像头</li>
-      <li>RTSP 服务在 <code>0.0.0.0:8554</code> 监听</li>
+      <li>2026-10-20 完成搭建并通过实弹演习（真人进区走动 → 截图报警送达 Muse app，延迟约 1–3 分钟）</li>
+      <li>2026-10-20 晚为试运行第 1 晚，计划试运行 2–3 晚后转正式</li>
+      <li>Neolink 以 <code>mqtt-rtsp</code> 模式运行：RTSP 画面流 + MQTT 事件同时开</li>
+    </ul>
+  </section>
+  <section>
+    <h2>🏗️ 系统结构（全部跑在 Mac mini 上）</h2>
+    <ul>
+      <li><b>Neolink</b>：把摄像头桥接成 RTSP 主/子码流，并转发摄像头的运动事件到 MQTT</li>
+      <li><b>Mosquitto</b>：本机 MQTT 中转站，只监听 <code>127.0.0.1:1883</code>，不对外</li>
+      <li><b>守护程序 guardian</b>（Python + LaunchAgent）：状态机 + 心跳自检 + 布防期间录像</li>
+      <li><b>检测程序 detector</b>（Python + LaunchAgent）：对子码流做帧差运动检测；摄像头的 MQTT 运动事件作辅助信号</li>
+      <li><b>报警中继</b>（助手侧）：约每分钟轮询 Mac 上的事件箱，取到事件就把截图发到 Muse app</li>
+    </ul>
+  </section>
+  <section>
+    <h2>🎯 监控范围</h2>
+    <ul>
+      <li>监控对象：监控区内任何进入和移动的人和物体（不只人形）</li>
+      <li>检测方式：子码流约 2 次/秒帧差分析，最小面积 + 连续 2 次确认，防灯光闪烁误报</li>
+      <li>排除区：画面最左边一条是 Kauppahalli 公共走廊，不是店内——按坐标精确屏蔽（归一化 x∈[0,122]、y∈[31,665]），走廊有人路过不触发</li>
+      <li>其余约 90% 画面（厨房操作区、吧台、客人座位区、后墙冰箱）全部在监控内</li>
+      <li>备注：摄像头自带 AI 人形检测经 MQTT 实测没有独立信号，靠不住，所以主检测用自研帧差</li>
+    </ul>
+  </section>
+  <section>
+    <h2>🖐️ 布防 / 撤防</h2>
+    <ul>
+      <li>触发词：在聊天里说「离开」= 布防，说「到了」= 撤防</li>
+      <li>布防回执：「已布防，链路正常」；撤防时发晨间小结（布防时长 / 触发次数 / 录像与上传状态）</li>
+      <li>兜底：每天 05:00 自动撤防；每天约 05:10 自动发昨夜小结</li>
+      <li>布防状态存文件，Mac 重启后自动续上，不会假装还在防</li>
+      <li>合规：店内有雇员时段不布防，监控只覆盖下班后无人时段</li>
+    </ul>
+  </section>
+  <section>
+    <h2>🔔 报警链路</h2>
+    <ul>
+      <li>检测触发 → 当场从主码流抓一张截图 + 写一条事件记录到 Mac 的事件箱</li>
+      <li>助手侧约 1 分钟轮询事件箱 → 取截图 → 在 Muse app 里发给店主（实测总延迟约 1–3 分钟，非秒级）</li>
+      <li>同一时段的重复触发由助手侧合并节流后再发，防轰炸；录像证据实时落盘，不受报警延迟影响</li>
+    </ul>
+  </section>
+  <section>
+    <h2>🎞️ 录像与存储</h2>
+    <ul>
+      <li>布防即开始录主码流，10 分钟一段，录完一段校验一段；本机滚动保留 48 小时</li>
+      <li>云端计划：整夜录像传 pCloud「!!AI」下的 <code>reolink/YYYY-MM-DD/</code>，保留 10 天轮换；事件片段单独存，保留 30 天</li>
+      <li>数据量级：主码流约 640 MB/小时，整夜约 10 GB</li>
+      <li>状态：上传管线是最后一块待建（录像先安全存在 Mac 上，之后补传）</li>
+    </ul>
+  </section>
+  <section>
+    <h2>🩺 自检</h2>
+    <ul>
+      <li>守护程序持续写心跳（RTSP / MQTT / 录像状态），链路断了能第一时间发现</li>
+      <li>布防期间链路故障立即报警——哑巴监控比误报更危险</li>
     </ul>
   </section>
   <section>
@@ -53,26 +108,26 @@
   <section>
     <h2>⚙️ 配置位置（Mac mini）</h2>
     <ul>
-      <li>配置文件：<code>~/Documents/neolink/neolink.toml</code></li>
-      <li>程序：<code>/tmp/neolink/neolink_macos/neolink</code>（Intel 版，需 Rosetta 2）</li>
-      <li>依赖：官方 GStreamer 框架（/Library/Frameworks/GStreamer.framework）</li>
-      <li>日志：<code>~/Documents/neolink/neolink.log</code></li>
+      <li>Neolink 配置：<code>~/Documents/neolink/neolink.toml</code>；程序：<code>/tmp/neolink/neolink_macos/neolink</code>（Intel 版，需 Rosetta 2 + 官网 GStreamer 框架）</li>
+      <li>守护/检测程序：<code>~/shop-camera/</code>（guardian.py、detector.py、state.json、events/、rec/）</li>
+      <li>LaunchAgent：<code>com.umami.shopguardian</code>、<code>com.umami.shopdetector</code>；Mosquitto 由 brew services 托管</li>
+      <li>注意：守护程序不能放在 ~/Documents——macOS 不让后台 LaunchAgent 读 Documents（TCC 限制），实测被拒后迁到 ~/shop-camera</li>
     </ul>
   </section>
   <section>
-    <h2>🔧 安装过程（2026-10-19 实战记录）</h2>
+    <h2>🔧 安装过程</h2>
     <ul>
-      <li>Neolink 官方只有 Intel 版 Mac 二进制（v0.6.2），M4 需装 Rosetta 2：<code>softwareupdate --install-rosetta</code></li>
-      <li>brew 装的 GStreamer 是 ARM64 版，与 Intel 版 Neolink 不兼容——必须装<a href="https://gstreamer.freedesktop.org/download/">官网</a>的 universal pkg（149MB）</li>
-      <li>config 文件里 <code>bind</code> 必须带引号：<code>bind = "0.0.0.0"</code>，不带引号报 TOML 解析错</li>
-      <li>首次连接走 relay discovery，约 5 秒连上，日志显示 "Connected and logged in" 即成功</li>
+      <li>2026-10-19（Neolink）：官方只有 Intel 版 Mac 二进制（v0.6.2），M4 需装 Rosetta 2；brew 的 GStreamer 是 ARM64 版不兼容，必须装官网 universal pkg；config 里 <code>bind</code> 必须带引号</li>
+      <li>2026-10-20（MQTT）：brew 装 Mosquitto 只给了 .example 配置，服务起不来——手写一份只监听本机的 mosquitto.conf 才通</li>
+      <li>2026-10-20（检测）：Neolink 实测事件 topic 为 <code>neolink/umami/status/motion</code> 与 <code>status/preview</code>（约 3 秒一张预览图），无独立人形 topic</li>
     </ul>
   </section>
   <section>
     <h2>📝 待办</h2>
     <ul>
-      <li>开机自启（LaunchAgent，常驻运行）</li>
-      <li>录像：下班后自动录，存 30 天自动清理</li>
+      <li>pCloud 上传管线（整夜录像 + 10 天轮换 + 事件片段 30 天）——最后一块</li>
+      <li>试运行 2–3 晚后转正式启用</li>
+      <li>二期设想：识别店主本人、进出店自动布防/撤防（E1 Pro 无人脸识别，软件比对在俯拍光线下不可靠，暂缓）</li>
     </ul>
   </section>
 </main>
