@@ -32,10 +32,10 @@
   <section>
     <h2>📦 安装位置（Mac mini）</h2>
     <ul>
-      <li><code>~/Documents/APP-Sales/fetcher/</code> —— 抓取脚本（含 <code>app-sales-fetch.py</code> 主入口）</li>
-      <li><code>~/Documents/APP-Sales/venv/</code> —— Python 虚拟环境（含 <code>openpyxl</code>）</li>
-      <li><code>~/Documents/APP-Sales/数据文件/pos.db</code> —— 订单明细库（SQLite）</li>
-      <li><code>~/Documents/APP-Sales/数据文件/生意指标.xlsx</code> —— 每日营收报表</li>
+      <li><code>~/APP-Sales/fetcher/</code> —— 抓取脚本（含 <code>app-sales-fetch.py</code> 主入口）</li>
+      <li><code>~/APP-Sales/venv/</code> —— Python 虚拟环境（含 <code>openpyxl</code>）</li>
+      <li><code>~/APP-Sales/数据文件/pos.db</code> —— 订单明细库（SQLite）</li>
+      <li><code>~/APP-Sales/数据文件/生意指标.xlsx</code> —— 每日营收报表</li>
     </ul>
   </section>
   <section>
@@ -53,17 +53,17 @@
       <li>位置：<code>~/Library/LaunchAgents/com.umami.appsales.daily-fetch.plist</code>（macOS 规定只能放这里，设置里看不到）</li>
       <li>时间：<b>每天 15:30</b> 自动跑</li>
       <li>跑什么：<code>venv/bin/python fetcher/app-sales-fetch.py</code> —— 抓 SumUp + ePassi + Edenred → 写 pos.db → 算利润 → 填生意指标.xlsx</li>
-      <li>安装/重建：<code>cd ~/Documents/APP-Sales/fetcher && bash setup_launchd.sh</code></li>
+      <li>安装/重建：<code>cd ~/APP-Sales/fetcher && bash setup_launchd.sh</code></li>
       <li>卸载：<code>launchctl unload ~/Library/LaunchAgents/com.umami.appsales.daily-fetch.plist</code></li>
     </ul>
     <h3 style="font-size:15px;margin:14px 0 8px;color:#555;">查看方法（终端）</h3>
     <pre>launchctl list | grep appsales          # 任务在不在
-tail -20 ~/Documents/APP-Sales/fetcher/app-sales-fetch.log   # 跑没跑、报错没</pre>
+tail -20 ~/APP-Sales/fetcher/app-sales-fetch.log   # 跑没跑、报错没</pre>
   </section>
   <section>
     <h2>🖐️ 手动抓取</h2>
     <ul>
-      <li>终端：<code>~/Documents/APP-Sales/venv/bin/python ~/Documents/APP-Sales/fetcher/app-sales-fetch.py</code></li>
+      <li>终端：<code>~/APP-Sales/venv/bin/python ~/APP-Sales/fetcher/app-sales-fetch.py</code></li>
       <li>或点 APP-Kitchen 看板上的"Fetch &amp; save"按钮（后台调同一个脚本）</li>
     </ul>
   </section>
