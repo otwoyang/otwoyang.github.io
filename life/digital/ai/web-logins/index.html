@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WebLogins · 数字世界地图</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; background: #f5f5f5; color: #333; }
+  header { background: #2c3e50; color: white; padding: 20px; }
+  header a { color: #7fb3d5; text-decoration: none; font-size: 14px; }
+  header h1 { font-size: 24px; margin: 8px 0 4px; }
+  header p { opacity: 0.8; font-size: 14px; }
+  main { max-width: 800px; margin: 20px auto; padding: 0 16px 40px; }
+  section { background: white; border-radius: 8px; padding: 20px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+  h2 { font-size: 17px; margin: 18px 0 12px; color: #2c3e50; }
+  h2:first-child { margin-top: 0; }
+  li { line-height: 1.8; margin-left: 20px; }
+  p { line-height: 1.8; }
+  table { border-collapse: collapse; margin: 8px 0; width: 100%; }
+  th, td { border: 1px solid #ddd; padding: 6px 10px; text-align: left; font-size: 13.5px; line-height: 1.6; }
+  th { background: #f0f3f6; }
+  .key { background: #f7f9fb; border-left: 4px solid #2c3e50; padding: 10px 14px; line-height: 1.8; }
+  .ok { color: #1e8449; font-weight: 600; }
+  .site { font-weight: 600; }
+  a.dl { color: #2471a3; }
+</style>
+</head>
+<body>
+<header>
+  <a href="/">← 返回数字世界地图</a>
+  <h1>🔑 WebLogins</h1>
+  <p>Life / Digital / AI / WebLogins —— 云电脑网页登录验活总表（2026-10-21 逐个实登定版）</p>
+</header>
+<main>
+  <section>
+    <p class="key">助手云电脑里保存的常用网站登录，2026-10-21 逐个实登验活。结论：现存 17 个全部能登进去——难度 0 打开就进 12 个、难度 1 密码直登 2 个、难度 2 Google 一键 1 个、难度 3 每次要收邮箱验证码 2 个（验证码由助手从邮箱代取）。已剔除：flomo、b2clogin、reolink.com（从未注册）、championstore.com（三年才买一次）。</p>
+    <p style="margin-top:10px">原件：<a class="dl" href="login-audit-2026-10-21.pdf">《网站登录验活表》PDF</a></p>
+  </section>
+  <section>
+<h2>难度 0 · 打开就进——会话还在，什么都不用输（12 个）</h2>
+<table>
+<tr><th></th><th>站点</th><th>用途</th><th>结果</th><th>说明</th></tr>
+<tr><td class="no">1</td><td class="site">kespro.com</td><td class="use">进货批发</td><td class="res ok">已登录</td><td>打开即是登录状态（guaimost@gmail.com／客户 1849492 Umami sushi bar）</td></tr>
+<tr><td class="no">2</td><td class="site">etasku.fi</td><td class="use">发票存档</td><td class="res ok">已登录</td><td>打开即是登录状态</td></tr>
+<tr><td class="no">3</td><td class="site">barona.mepco.fi</td><td class="use">Barona 排班下单</td><td class="res ok">已登录</td><td>打开即是登录状态（Qi Yang，账号 551538）</td></tr>
+<tr><td class="no">4</td><td class="site">pcloud.com</td><td class="use">文件 / 电台上传</td><td class="res ok">已登录</td><td>打开即是登录状态（ormandme 账号）</td></tr>
+<tr><td class="no">5</td><td class="site">verkkokauppa.com</td><td class="use">购物</td><td class="res ok">已登录</td><td>打开即是登录状态</td></tr>
+<tr><td class="no">6</td><td class="site">gigantti.fi</td><td class="use">购物</td><td class="res ok">已登录</td><td>打开即是登录状态</td></tr>
+<tr><td class="no">7</td><td class="site">vr.fi</td><td class="use">火车票</td><td class="res ok">已登录</td><td>打开即是登录状态</td></tr>
+<tr><td class="no">8</td><td class="site">google.com</td><td class="use">Google 账号</td><td class="res ok">已登录</td><td>会话在；若将来全新登录，可能需要在手机上点确认数字</td></tr>
+<tr><td class="no">9</td><td class="site">github.com</td><td class="use">代码 / 网站维护</td><td class="res ok">已登录</td><td>会话在；日常维护实际走 PAT＋原生 git</td></tr>
+<tr><td class="no">10</td><td class="site">garmin.com</td><td class="use">健康数据</td><td class="res ok">已登录</td><td>打开即是登录状态；数据拉取走专用通道</td></tr>
+<tr><td class="no">11</td><td class="site">bilibili.com</td><td class="use">视频</td><td class="res ok">已登录</td><td>打开即是登录状态（账号「7781不是49」）</td></tr>
+<tr><td class="no">12</td><td class="site">barona.fi</td><td class="use">Barona 官网</td><td class="res na">本站无登录</td><td>官网本身没有登录入口；排班、下单都在 barona.mepco.fi（第 3 条，已验）</td></tr>
+</table>
+<h2>难度 1 · 输密码就进——助手用保险库密码自理（2 个）</h2>
+<table>
+<tr><th></th><th>站点</th><th>用途</th><th>结果</th><th>说明</th></tr>
+<tr><td class="no">13</td><td class="site">hsl.fi</td><td class="use">交通</td><td class="res ok">密码直登成功</td><td>输保险库密码一次即进（先过一道图形检查）</td></tr>
+<tr><td class="no">14</td><td class="site">sumup.com</td><td class="use">收款后台</td><td class="res ok">密码直登成功</td><td>输保险库密码一次即进（先过一道图形检查）</td></tr>
+</table>
+<h2>难度 2 · 借 Google 一键进——没有自己的密码（1 个）</h2>
+<table>
+<tr><th></th><th>站点</th><th>用途</th><th>结果</th><th>说明</th></tr>
+<tr><td class="no">15</td><td class="site">onnibus.com</td><td class="use">长途巴士</td><td class="res ok">Google 一键直登</td><td>Onnibus 是 Google 注册账号、没有密码；一律走 Google 登录（otwoyang@gmail.com）。保险库里存的那条 Onnibus 密码是错的，不要用</td></tr>
+</table>
+<h2>难度 3 · 要收验证码——光有密码不够（2 个）</h2>
+<table>
+<tr><th></th><th>站点</th><th>用途</th><th>结果</th><th>说明</th></tr>
+<tr><td class="no">16</td><td class="site">epassi.fi</td><td class="use">员工福利 / 会计交接</td><td class="res pending">只能验证码登录</td><td>ePassi 没有密码登录这回事，只认邮箱/手机一次性验证码；保险库里存的登录名也不是邮箱，需要更正。每次用都要收一次码</td></tr>
+<tr><td class="no">17</td><td class="site">edenred.fi</td><td class="use">商户端（kumppani.edenred.fi）</td><td class="res ok">登录成功</td><td>保险库密码可用；每次登录还要一次性验证码，码发到 guaimost@gmail.com，助手可代取递交（2026-10-21 实验成功）</td></tr>
+</table>
+  </section>
+  <section>
+    <h2 style="margin-top:0">下次登录要注意什么</h2>
+<ul >
+<li><strong>难度 0–2（15 个）</strong>：助手自理，不用你管；会话掉了用保险库密码或 Google 一键静默重登，失败才找你。</li>
+<li><strong>难度 3（ePassi、Edenred）</strong>：每次登录都要收码——用到时我发起、从邮箱代取，你点一下确认卡，一次过。</li>
+<li><strong>难度 4 已清空</strong>：Edenred 实验成功后移入难度 3；Champion 用户决定删除（三年才买一次，不值得维护登录）。</li>
+</ul>
+  </section>
+</main>
+</body>
+</html>
