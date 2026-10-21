@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AIControl · 数字世界地图</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; background: #f5f5f5; color: #333; }
+  header { background: #2c3e50; color: white; padding: 20px; }
+  header a { color: #7fb3d5; text-decoration: none; font-size: 14px; }
+  header h1 { font-size: 24px; margin: 8px 0 4px; }
+  header p { opacity: 0.8; font-size: 14px; }
+  main { max-width: 800px; margin: 20px auto; padding: 0 16px 40px; }
+  section { background: white; border-radius: 8px; padding: 20px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+  h2 { font-size: 18px; margin-bottom: 12px; color: #2c3e50; }
+  h3 { font-size: 15.5px; margin: 14px 0 6px; color: #2c3e50; }
+  li { line-height: 1.8; margin-left: 20px; }
+  table { border-collapse: collapse; margin: 8px 0; width: 100%; }
+  th, td { border: 1px solid #ddd; padding: 6px 10px; text-align: left; font-size: 13.5px; line-height: 1.6; }
+  th { background: #f0f3f6; }
+  .key { background: #f7f9fb; border-left: 4px solid #2c3e50; padding: 10px 14px; line-height: 1.8; }
+  .todo li { list-style: none; margin-left: 2px; }
+</style>
+</head>
+<body>
+<header>
+  <a href="/">← 返回数字世界地图</a>
+  <h1>🛏️ AIControl</h1>
+  <p>Life / Health / Sleep / AIControl —— AI 对睡眠的干预 · 方案（2026-10-21 定稿讨论版，设计人：用户本人，执行：Muse）</p>
+</header>
+<main>
+  <section>
+    <h2>一、一句话方案</h2>
+    <p class="key">用现成的佳明手表当眼睛、Muse 当大脑、小电热毯＋智能插座当手，以不到百分之一的成本，做一套对用户本人比 Eight Sleep 更有效的睡眠干预系统。</p>
+  </section>
+  <section>
+    <h2>二、为什么不用 Eight Sleep</h2>
+    <table>
+      <tr><th></th><th>Eight Sleep Pod</th><th>本方案</th></tr>
+      <tr><td>成本</td><td>两三千欧起 ＋ 每月订阅；不订阅则无 AI 调温、无睡眠分析</td><td>佳明已有；电热毯＋插座几十欧；大脑（Muse）已在用</td></tr>
+      <tr><td>数据视角</td><td>只有一张床：心率、HRV、呼吸、分期、打鼾、床温</td><td>佳明同类数据 ＋ 全天上下文：日记（每 10 分钟）、销售忙闲、聊天、饮食、情绪、次日任务压力</td></tr>
+      <tr><td>分析</td><td>能报"深睡少了 20 分钟"，不知原因</td><td>能报原因：冷醒、吃辣烧心、睡前游戏、次日有大事——每晚都有已标注的前因</td></tr>
+      <tr><td>干预</td><td>整张床水循环调温，一体化、秒级</td><td>只垫脚下小毯，脉冲式补热 20 分钟——对症（脚冷）、省电、不焐全身</td></tr>
+      <tr><td>它独有、我们没有的</td><td>夏天制冷、打鼾检测与抬升</td><td>与用户的问题（怕冷）无关，接受缺项</td></tr>
+    </table>
+  </section>
+  <section>
+    <h2>三、架构：眼睛、大脑、手</h2>
+    <ul>
+      <li><strong>眼睛（观察）</strong>：佳明 Enduro 3 提供分期、心率（约 2 分钟一点）、血氧（1 分钟）、呼吸、HRV（5 分钟）、压力、身体电量；外加全天上下文数据源（日记、销售、聊天、日程、天气）。</li>
+      <li><strong>大脑（判断）</strong>：Muse。以用户本人 30 晚基线为尺（评分中位 83、深睡 74 分钟、静息心率 49、HRV 66），不用人群平均；以用户亲口标注过的样本（冻醒的夜、烧心的夜）校准判断。</li>
+      <li><strong>手（执行）</strong>：小电热毯经智能插座通断；后续可扩展灯、声音、空调（夏季）。</li>
+    </ul>
+  </section>
+  <section>
+    <h2>四、数据链：用硬件实现实时同步</h2>
+    <p class="key">佳明不开放实时推送。解法（用户原创）：<strong>豆包二代手机每 5 分钟自动打开佳明 App 点一次同步</strong>——"你不给我实时同步，我用硬件的方式实时同步。"数据上云后，Muse 拉取分析，粒度 5 分钟。</p>
+    <ul>
+      <li><strong>现状</strong>：豆包二代手机预计 2026 年 11 月底到货。手机未到之前，本方案只做纸面定稿与手动阶段，不假装闭环已存在。</li>
+      <li>到货后先实测一整晚：5 分钟一同步的稳定性、耗电与发热，再定最终频率（5 分钟为目标值，实测不稳则放宽）。</li>
+      <li>豆包手机同时充当家里的常驻设备：家里无常驻 WiFi，它是智能插座控制通道的候选网关。</li>
+    </ul>
+  </section>
+  <section>
+    <h2>五、大脑的判断与干预规则</h2>
+    <h3>监测节奏</h3>
+    <ul><li>整夜值守，按数据推送节奏（目标 5 分钟）滚动分析；只在需要干预或出现报警级异常时动作，其余时间静默。</li></ul>
+    <h3>触发补热的典型情形（满足其一即评估）</h3>
+    <ul>
+      <li>后半夜反复出现"深睡→浅睡→清醒"的上浮，且当晚曲线与已标注的"冷夜"样本形状相似；</li>
+      <li>清醒次数明显超过用户平常，且心率同步上行；</li>
+      <li>深睡积累进度显著落后于基线，且无其他已知原因（如睡前游戏、饮食、次日压力）。</li>
+    </ul>
+    <h3>干预动作</h3>
+    <ul>
+      <li>开脚下电热毯 <strong>20 分钟</strong>（温度补偿脉冲），然后自动关闭；</li>
+      <li>开后 30 分钟观察：分期是否沉回去、心率是否回落——有效与否记入当晚档案，成为新的已标注样本；</li>
+      <li>无效则当晚不再重复加热，转为晨间汇报时说明。</li>
+    </ul>
+    <h3>安全兜底（硬规则）</h3>
+    <ul>
+      <li>数据断流 → 默认关，绝不保持加热状态；</li>
+      <li>一晚补偿次数设上限（初始 2 次，运行后按效果调整）；</li>
+      <li>起床时间前必须全关；毯子档位由旋钮预设在低档，插座只管通断、不负责温度上限；</li>
+      <li>血氧持续下降等报警级异常，第一时间通知用户，不等天亮。</li>
+    </ul>
+  </section>
+  <section>
+    <h2>六、一晚的流程（示例）</h2>
+    <ol>
+      <li>21:00 睡觉提醒照常；Muse 结合次日安排判断今晚风险（如次日有大事、今天吃辣），必要时提前一句提醒。</li>
+      <li>入睡后进入值守：确认入睡点，跟踪深睡积累与清醒片段。</li>
+      <li>凌晨发现疑似冷醒签名 → 补热 20 分钟 → 关闭 → 观察 30 分钟是否沉回去。</li>
+      <li>晨间汇报：昨晚干预了几次、效果如何、今晚是否调整规则——术语照说、每项带一句人话解释。</li>
+    </ol>
+  </section>
+  <section>
+    <h2>七、手：设备规格</h2>
+    <ul>
+      <li><strong>小电热毯</strong>：约 60×40 cm（比电脑显示器略大），只垫脚下（治脚冷）；<strong>必须机械旋钮款</strong>——电子按键款断电后不自启，插座指挥不动；低功率、可平铺固定、搬家可带走（租房只用插拔式，不动房子本体）。</li>
+      <li><strong>智能插座</strong>：负责通断与计时；<strong>如何接入 Muse 的控制通道——稍后补充（见待办）</strong>。</li>
+      <li><strong>后续扩展</strong>：智能灯泡（睡前渐暗、起床渐亮）；声音（手机助眠声）；空调（夏季版的手，租房只能移动空调＋红外控制，到时候再议）。</li>
+      <li><strong>可选</strong>：卧室温度计（如 SwitchBot）补上唯一的实测缺口——室温几度。买与不买不影响主闭环成立。</li>
+    </ul>
+  </section>
+  <section>
+    <h2>八、分阶段实施</h2>
+    <ul>
+      <li><strong>阶段 0（现在）</strong>：方案定稿；眼睛＋提醒先行——晨间分析、21:00 提醒、暖气验收夜（2026-10-21→22）照常跑。</li>
+      <li><strong>阶段 1（设备到位后）</strong>：电热毯＋插座先以本地定时方式用（后半夜固定时段低档），积累"补热 vs 不补热"的对照夜。</li>
+      <li><strong>阶段 2（豆包手机到货）</strong>：打通 5 分钟数据链与插座控制通道，上半自动闭环：Muse 判断、执行、记录效果。</li>
+      <li><strong>阶段 3（运行稳定后）</strong>：规则按已标注样本持续校准；夏季再评估空调接入。</li>
+    </ul>
+  </section>
+  <section>
+    <h2>九、待办（只记在方案内，暂不单独建任务）</h2>
+    <ul class="todo">
+      <li>☐ 智能插座如何接入 Muse 的控制通道——稍后补充讨论</li>
+      <li>☐ 豆包二代手机到货后：实测整晚 5 分钟同步的稳定性，定最终频率</li>
+      <li>☐ 小电热毯选型：60×40 左右、机械旋钮、低功率（芬兰本地可买）</li>
+      <li>☐ 智能插座选型（与接入方式一并定）</li>
+      <li>☐ 现有那条电热毯是旋钮还是电子按键：回家看一眼（决定它能否先顶上）</li>
+      <li>☐ 卧室温度计买不买（SwitchBot 候选，研究已做完）</li>
+      <li>☐ 空调接入（2027 年夏季前再议：移动空调＋红外）</li>
+    </ul>
+  </section>
+</main>
+</body>
+</html>
