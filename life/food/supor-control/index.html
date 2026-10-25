@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>小C控制 · 数字世界地图</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; background: #f5f5f5; color: #333; }
+  header { background: #2c3e50; color: white; padding: 20px; }
+  header a { color: #7fb3d5; text-decoration: none; font-size: 14px; }
+  header h1 { font-size: 24px; margin: 8px 0 4px; }
+  header p { opacity: 0.8; font-size: 14px; }
+  main { max-width: 800px; margin: 20px auto; padding: 0 16px 40px; }
+  section { background: white; border-radius: 8px; padding: 20px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+  h2 { font-size: 18px; margin-bottom: 12px; color: #2c3e50; }
+  h3 { font-size: 15.5px; margin: 14px 0 6px; color: #2c3e50; }
+  li { line-height: 1.8; margin-left: 20px; }
+  p { line-height: 1.8; }
+  code { background: #f0f3f6; padding: 1px 5px; border-radius: 3px; font-size: 13px; }
+  pre { background: #f7f9fb; border-left: 4px solid #2c3e50; padding: 10px 14px; line-height: 1.7; overflow-x: auto; font-size: 13px; margin: 8px 0; }
+  table { border-collapse: collapse; margin: 8px 0; width: 100%; }
+  th, td { border: 1px solid #ddd; padding: 6px 10px; text-align: left; font-size: 13.5px; line-height: 1.6; }
+  th { background: #f0f3f6; }
+  .key { background: #f7f9fb; border-left: 4px solid #2c3e50; padding: 10px 14px; line-height: 1.8; }
+</style>
+</head>
+<body>
+<header>
+  <a href="/">← 返回数字世界地图</a>
+  <h1>🍳 小C控制</h1>
+  <p>Life / Food / 小C控制 —— 苏泊尔小C主厨机 SY-50MT01：App 是怎么抓包、怎么推菜谱、能控什么、控不了什么（2026-10-25 实测）</p>
+</header>
+<main>
+  <section>
+    <h2>一、结论先说</h2>
+    <p class="key">云端只有一个写接口（推菜谱）。温度、时间、转速、暂停、停止、称重，App 里都没有，全部只在机器触屏上。远程能做的只有两件事：推菜谱、读状态。</p>
+  </section>
+
+  <section>
+    <h2>二、能远程发的命令：只有一个</h2>
+    <table>
+      <tr><th>接口</th><th>说明</th></tr>
+      <tr><td><code>POST https://iot-app.supor.com/iot/app/v2/device/recipe/toCook</code></td><td>把云端菜谱推到机器屏幕上。机器收到后显示菜谱 + 开始按钮，<strong>不会自己开跑，要人按机器上的开始</strong></td></tr>
+      <tr><td>请求体（5 字段明文）</td><td><code>{"mac":"24EC4AEF85A8","pid":"A001","recipeId":"…","recipeProductId":"…","weightId":"…","onOffCancel":1}</code></td></tr>
+      <tr><td>鉴权</td><td>Bearer JWT（400 字符，2026-12-05 过期）。令牌值不写在这里，现抓现用</td></tr>
+      <tr><td>成功</td><td><code>{"code":0,"msg":"成功","data":true}</code>（2026-10-25 05:47:10 实测，清炒白菜）</td></tr>
+      <tr><td>机器工作中再发</td><td><code>{"code":3003,"msg":"设备正在工作中"}</code>（06:00:34 实测，onOffCancel=0 也一样被拒）</td></tr>
+    </table>
+    <p>菜谱参数不在 toCook 里，<strong>在菜谱详情的动作链里</strong>（<code>GET /iot/app/v1/recipe/detail</code> 的 <code>data.weights[0].actions[]</code>，每项 <code>actJson</code>）。清炒白菜 7 个动作，真正做菜的是 3 个：</p>
+    <table>
+      <tr><th>步骤</th><th>actJson（菜谱计划）</th><th>机器实跑（WS 上报）</th></tr>
+      <tr><td>爆香</td><td>function 1，powerScale 3，3 分钟，刀速 2</td><td>火力 3（大火力），刀速 1（低转速）</td></tr>
+      <tr><td>翻炒</td><td>function 1，powerScale 3，3 分钟，刀速 3</td><td>火力 3（大火力），刀速 3（高转速）</td></tr>
+      <tr><td>烹煮</td><td>function 10，powerScale 3，4 分钟，刀速 2</td><td>火力 3（大火力），刀速 1（低转速）</td></tr>
+    </table>
+    <p>刀速编号两边不同但意思对得上：菜谱里 2=低、3=高；机器上报 1=低、3=高。<strong>没有温度字段</strong>（菜谱和实跑都没有可调温度；清洗实测温度固定 100°C）。</p>
+  </section>
+
+  <section>
+    <h2>三、能远程读的状态：WS 全量（38 个字段）</h2>
+    <table>
+      <tr><th>项目</th><th>内容</th></tr>
+      <tr><td>地址</td><td><code>ws://iotm2m.supor.com:8080/ws/app/v1</code>（IP 40.73.114.150:8080，明文，无 TLS）</td></tr>
+      <tr><td>握手</td><td><code>GET /ws/app/v1</code>，<code>Host: iotm2m.supor.com:8080</code>，<code>Upgrade: websocket</code> → <code>101 Switching Protocols</code></td></tr>
+      <tr><td>登录</td><td><code>{"cmd":"login_req","data":{"appid":"ea12a94030bf4f0f87dff2a971c2c35b","auto_subscribe":false,"heartbeat_interval":60,"p0_type":"attrs_v4","token":"&lt;32 位 hex，会话令牌&gt;","uid":"&lt;32 位 hex&gt;"}}</code></td></tr>
+      <tr><td>订阅</td><td><code>{"cmd":"subscribe_req","data":[{"did":"SA74sYmCFRpCSvoTDfZdw9"}]}</code></td></tr>
+      <tr><td>心跳</td><td>客户端每 60 秒发 <code>{"cmd":"ping"}</code></td></tr>
+      <tr><td>推送</td><td>服务端推 <code>{"cmd":"s2c_noti","data":{"did":"…","attrs":{…}}}</code>，待机约 5 秒一条，运转中每秒一条</td></tr>
+    </table>
+    <h3>整锅实跑状态机（清炒白菜，2026-10-25 05:53–06:05）</h3>
+    <table>
+      <tr><th>阶段</th><th>machineStatus</th><th>recipeStepNum</th><th>workStatus</th><th>火力</th><th>刀速</th><th>剩余时间</th><th>锅温</th></tr>
+      <tr><td>待机（推菜前）</td><td>0</td><td>0/7</td><td>116</td><td>0</td><td>1</td><td>0</td><td>20–21°C（水温）</td></tr>
+      <tr><td>已推菜、等开始</td><td>0</td><td>0→1→2</td><td>116</td><td>0</td><td>1</td><td>0</td><td>21°C</td></tr>
+      <tr><td>爆香</td><td>3</td><td>2/7</td><td>10</td><td>3</td><td>1（低）</td><td>180 秒起倒数</td><td>0（跑完显示 44°C）</td></tr>
+      <tr><td>步间</td><td>0</td><td>2→3</td><td>106</td><td>0</td><td>1</td><td>0</td><td>45–46°C</td></tr>
+      <tr><td>翻炒</td><td>3</td><td>4/7</td><td>9</td><td>3</td><td>3（高）</td><td>180 秒起倒数</td><td>0（跑完显示 80°C）</td></tr>
+      <tr><td>步间</td><td>0</td><td>4→5→6</td><td>105</td><td>0</td><td>3</td><td>0</td><td>81°C</td></tr>
+      <tr><td>烹煮</td><td>3</td><td>6/7</td><td>19</td><td>3</td><td>1（低）</td><td>240 秒起倒数</td><td>100°C</td></tr>
+      <tr><td>结束瞬间 → 待机</td><td>5 → 0</td><td>7/7</td><td>115</td><td>0</td><td>1</td><td>0</td><td>101–102°C（自然降温）</td></tr>
+    </table>
+    <h3>规律（4 次实测一致，含昨晚清洗）</h3>
+    <ul>
+      <li><strong>machineStatus</strong>：0 待机 / 3 工作中 / 5 结束瞬间。</li>
+      <li><strong>workStatus</strong>：运转中 = 模式码（9 翻炒 / 10 爆香 / 19 烹煮 / 20 清洗）；步间或待机 = 96+模式码（105/106/115/116）。待机时显示的是<strong>上一次跑完的模式</strong>。</li>
+      <li><strong>recipeStepNum</strong>：从 1 开始数的动作序号。3 个真动作是第 2、4、6 步；第 7 步 = 跑完。</li>
+      <li><strong>workTime</strong>：当前这步剩多少秒，1 秒 1 秒往下数。</li>
+      <li><strong>powerScale</strong>：3 = 大火力。本锅全程都是 3。</li>
+      <li><strong>realBladeStatus</strong>：1 = 低转速 / 3 = 高转速。待机时也是 1。</li>
+      <li><strong>setTempValue</strong>：恒为 100。<strong>realTempValue</strong>：待机时是水温；爆香/翻炒进行中读 0，步末才报真实值；烹煮进行中报 100°C；跑完 101–102°C 慢慢降。读数以步末和待机为准。</li>
+      <li><strong>contextState</strong>：0 待机 / 2 工作中。</li>
+      <li>其余字段：onOffStatus（开/关）、lidStatus（盖）、dailyRecipesCnt 6（每日菜谱 6 格）、netDbm（WiFi 信号 36–48）、各 warning 全 false、productModel <code>SY-50MT01</code>、productType <code>EPC</code>、ip <code>192.168.8.119</code>、machineSavedRecipesID（6 个每日菜谱短 ID）。</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>四、App 里没有的控制（已逐个点过验证）</h2>
+    <table>
+      <tr><th>位置</th><th>结果</th></tr>
+      <tr><td>运行中卡片（爆香 | 清炒白菜 &gt;）</td><td>点开是菜谱详情页，不是控制页</td></tr>
+      <tr><td>卡片上的时间/火力/转速数字</td><td>点了没反应，纯显示</td></tr>
+      <tr><td>机器图片、“工作中”角标</td><td>点了没反应</td></tr>
+      <tr><td>右上角 …</td><td>打开设备设置页（名称/状态/网络/RSSI/IP/MAC/Wi-Fi 版本），没有控制</td></tr>
+      <tr><td>菜谱详情页底部</td><td>只有“加入主厨机 / 开始烹饪”，没有暂停/停止</td></tr>
+    </table>
+    <p><strong>整锅 12 分钟里，App 只发了 3 种消息：login_req、subscribe_req、ping（共 27 条）。零条控制命令。</strong> App 就是个显示器 + 推菜谱的遥控器，做菜中的调参它发不出去。</p>
+  </section>
+
+  <section>
+    <h2>五、只在机器触屏上的东西（本地，云端看不到命令）</h2>
+    <ul>
+      <li>调温度、调时间、调转速、暂停、恢复、停止：都在机器自己的触屏上。机器本地执行，只把<strong>结果</strong>（新状态）报给云端，云端看不到“谁按了什么”。</li>
+      <li><strong>称重</strong>：云端 38 个字段里<strong>没有重量值</strong>，只有一个 <code>weightWarning</code>（布尔）。所有 HTTP 接口里也没有重量。秤的读数只显示在机器屏幕上。</li>
+      <li><strong>手动模式云端完全看不见（2026-10-25 06:09–06:11 实测）</strong>：用户在机器触屏上手动起了炒菜，机器在转、锅里在炒，但云端 2 分钟 23 条推送全是待机（machineStatus 0，第 7 步，workStatus 115），锅温 99→98→97°C 一路往下掉（加热没开）。WS 里除了 s2c_noti 和 pong 再无任何别的消息类型。结论：<strong>机器触屏上手动启动的功能，云端不跟踪、不显示、不上报</strong>——远程既看不见手动模式，也控制不了它。远程能管的只有云端菜谱（推菜 + 读状态）。</li>
+      <li>想远程调参，只有两条路（都没走通，留待以后）：（1）抓机器自己的云连接（机器→云端那条线，模拟器上看不到，要在店里网络层抓）；（2）解 App 的加密代码找有没有隐藏的控制接口（创作者路线已死，控制接口是否藏在加密代码里未知）。</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>六、机器局域网</h2>
+    <ul>
+      <li>机器 IP：192.168.8.119（店里 WiFi，Mac 是 192.168.8.121，同一网段，ping 通）。</li>
+      <li>扫了 16 个常见端口（80/8080/443/1883/8883/6668/8000/9000 等）：<strong>全关</strong>。机器只向外连云，不在局域网开服务，局域网直控这条路不通。</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>七、抓包文件</h2>
+    <ul>
+      <li><code>supor-cap3-final.pcap</code>（4.7MB，05:40–06:07，含 WS 握手 + 整锅运行）</li>
+      <li><code>analyze_cap3_ws.py</code>（纯 Python 解析器，SLL2 格式，不用 tshark）</li>
+      <li><code>series4.py</code>（按 TCP 序号重组 + 状态变迁表）</li>
+      <li><code>cap3-ws-handshake.txt</code>（握手与登录格式，令牌只记格式不记值）</li>
+      <li>本次 toCook：05:47:10 成功；06:00:34 onOffCancel=0 被拒（3003 设备正在工作中）</li>
+    </ul>
+  </section>
+</main>
+</body>
+</html>
