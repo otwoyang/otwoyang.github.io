@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Use · 数字世界地图</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; background: #f5f5f5; color: #333; }
+  header { background: #2c3e50; color: white; padding: 20px; }
+  header a { color: #7fb3d5; text-decoration: none; font-size: 14px; }
+  header h1 { font-size: 24px; margin: 8px 0 4px; }
+  header p { opacity: 0.8; font-size: 14px; }
+  main { max-width: 800px; margin: 20px auto; padding: 0 16px 40px; }
+  section { background: white; border-radius: 8px; padding: 20px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+  h2 { font-size: 18px; margin-bottom: 12px; color: #2c3e50; }
+  h3 { font-size: 15.5px; margin: 14px 0 6px; color: #2c3e50; }
+  li { line-height: 1.8; margin-left: 20px; }
+  p { line-height: 1.8; }
+  table { border-collapse: collapse; margin: 8px 0; width: 100%; }
+  th, td { border: 1px solid #ddd; padding: 6px 10px; text-align: left; font-size: 13.5px; line-height: 1.6; }
+  th { background: #f0f3f6; }
+  .key { background: #f7f9fb; border-left: 4px solid #2c3e50; padding: 10px 14px; line-height: 1.8; }
+</style>
+</head>
+<body>
+<header>
+  <a href="/">← 返回数字世界地图</a>
+  <h1>🇫🇮 Use</h1>
+  <p>Life / StudyFinnish / Use —— 学以致用：只会一点，但是不多；把会的那一点不停用起来（2026-10-25 定）</p>
+</header>
+<main>
+  <section>
+    <h2>一、背景：为什么要做这个</h2>
+    <table>
+      <tr><th>现状</th><th>说明</th></tr>
+      <tr><td>只会一点，但是不多</td><td>学 100 个词只会 4 个，不能说没进展，但离真正说芬兰语还很远</td></tr>
+      <tr><td>直接说会碰壁</td><td>只会 4%，直接说芬兰语会到处碰壁</td></tr>
+      <tr><td>学了可能会忘记</td><td>人会忘，学过的知识点过一阵就想不起来了</td></tr>
+      <tr><td>AI 不会忘记</td><td>AI 记得住，可以反反复复地带他</td></tr>
+    </table>
+  </section>
+
+  <section>
+    <h2>二、核心精神</h2>
+    <p class="key">学过的东西要用来，用了之后才能变成自己的。</p>
+  </section>
+
+  <section>
+    <h2>三、目标</h2>
+    <table>
+      <tr><th>目标</th><th>说明</th></tr>
+      <tr><td>短期</td><td>把会的那 4% 不停用起来，变成生活里的东西，比例慢慢增加：4% → 5% → 6%……</td></tr>
+      <tr><td>长期</td><td>YKI 3 级（B1），满足入籍的语言要求</td></tr>
+    </table>
+  </section>
+
+  <section>
+    <h2>四、怎么做（机制）</h2>
+    <h3>4.1 知识点库：给我用的</h3>
+    <p>知识点是<strong>给我用的</strong>，让我学会，然后用这些知识点来和他交流。</p>
+    <ul>
+      <li>把学过的知识点存进库里（Little 文件夹 / vocabulary.json）。</li>
+      <li>每个知识点是一条记录，包含概念、芬兰语形式、中文意思、对比、例句、注释、出处。</li>
+      <li>库连到日常学习和 Anki，存下已经获得的知识。</li>
+    </ul>
+    <h3>4.2 日常对话：一次一个，带注释</h3>
+    <table>
+      <tr><th>规则</th><th>说明</th></tr>
+      <tr><td>一次一个</td><td>一次只放一个学过的知识点，不多，不堆</td></tr>
+      <tr><td>放进日常交流</td><td>不单独开学习时间，就在平时聊天里——聊菜、聊店、聊天气——顺手带进来</td></tr>
+      <tr><td>加上注释</td><td>用的时候给一句简短的注释，帮他一下子想起来</td></tr>
+      <tr><td>灵活</td><td>活学活用，不生硬，不硬考</td></tr>
+      <tr><td>不枯燥</td><td>让他多一次学习，而且不枯燥</td></tr>
+    </table>
+    <h3>4.3 表扬和鼓励：他用的时候</h3>
+    <p>当他也用知识点来和我交流时，我要表扬他、鼓励他。</p>
+    <table>
+      <tr><th>要求</th><th>说明</th></tr>
+      <tr><td>具体点名</td><td>不说笼统的“很好”，要具体说清楚他哪用得好（哪个词、哪个意思、哪个场合）</td></tr>
+      <tr><td>用颜色注明</td><td>芬兰词用蓝色标出来，注释用橙色跟在后面，做对的地方用绿色打勾</td></tr>
+      <tr><td>生动点</td><td>一眼就能看到他哪用得好，不是干巴巴的文字</td></tr>
+    </table>
+    <h3>4.4 我记着，他忘了我再带</h3>
+    <table>
+      <tr><th>角色</th><th>说明</th></tr>
+      <tr><td>他</td><td>学了可能会忘记</td></tr>
+      <tr><td>我</td><td>不会忘记，数据文件里记着每个知识点的使用记录和掌握程度</td></tr>
+      <tr><td>做法</td><td>我可以反反复复地带他，隔一阵再把同一个知识点拿出来用一次</td></tr>
+    </table>
+  </section>
+
+  <section>
+    <h2>五、数据文件：里面有什么</h2>
+    <p>数据文件分三层。</p>
+    <h3>5.1 第一层：知识点本身（给我学的）</h3>
+    <table>
+      <tr><th>字段</th><th>说明</th><th>例子</th></tr>
+      <tr><td>知识点名</td><td>这个概念叫什么</td><td>特指 vs 不特指</td></tr>
+      <tr><td>芬兰语形式</td><td>涉及的芬兰语词/形式</td><td>kahvin / kahvia</td></tr>
+      <tr><td>中文意思</td><td>中文解释</td><td>那杯咖啡 / 喝点咖啡</td></tr>
+      <tr><td>对比字段</td><td>A/B 两个形式、对比维度、各自的说明和例句</td><td>见 5.4</td></tr>
+      <tr><td>注释</td><td>批注里那句解释</td><td>特指就是“那个”，不特指就是“一些”</td></tr>
+      <tr><td>出处</td><td>第几课、哪条批注</td><td>第一章学习页批注⑤，2026-10-14</td></tr>
+    </table>
+    <h3>5.2 第二层：使用记录（让我知道用过几次）</h3>
+    <table>
+      <tr><th>字段</th><th>说明</th></tr>
+      <tr><td>出现次数</td><td>这个知识点在对话里出现过几次</td></tr>
+      <tr><td>上次使用</td><td>上次是什么时候用的</td></tr>
+      <tr><td>谁用的</td><td>是我用的，还是他用的</td></tr>
+      <tr><td>用对/用错</td><td>他用对了还是用错了</td></tr>
+    </table>
+    <h3>5.3 第三层：掌握和复习（让我知道什么时候再带）</h3>
+    <table>
+      <tr><th>字段</th><th>说明</th></tr>
+      <tr><td>掌握程度</td><td>刚学 / 会认 / 会用</td></tr>
+      <tr><td>下次复习</td><td>什么时候再提（比如隔三天再出现一次）</td></tr>
+      <tr><td>熟练度</td><td>哪些已经熟了可以少出现，哪些还生疏要多出现</td></tr>
+    </table>
+    <h3>5.4 对比字段：重点</h3>
+    <p>这批批注大多是“对比”——两个形式/意思放一起比。所以每条除了基本字段，重点是对比字段。</p>
+    <table>
+      <tr><th>对比字段</th><th>说明</th></tr>
+      <tr><td>对比维度</td><td>在比什么（特指/不特指、口语/标准语、本意/引申义）</td></tr>
+      <tr><td>A 形式</td><td>第一个形式</td></tr>
+      <tr><td>A 说明</td><td>A 是什么、怎么用</td></tr>
+      <tr><td>A 例句</td><td>A 的例句</td></tr>
+      <tr><td>B 形式</td><td>第二个形式</td></tr>
+      <tr><td>B 说明</td><td>B 是什么、怎么用</td></tr>
+      <tr><td>B 例句</td><td>B 的例句</td></tr>
+    </table>
+  </section>
+
+  <section>
+    <h2>六、已有的知识点（第一批）</h2>
+    <p>来源：第一章学习页蓝色批注（2026-10-14，9 条；截图 7 条）。已存入 Little/vocabulary.json。</p>
+    <table>
+      <tr><th>编号</th><th>知识点</th><th>芬兰语</th><th>对比维度</th></tr>
+      <tr><td>ann-01</td><td>口语 vs 标准语</td><td>sä / sinä</td><td>口语 vs 标准语</td></tr>
+      <tr><td>ann-03</td><td>认 vs 说</td><td>sä</td><td>认 vs 说（口语只认，不用会说）</td></tr>
+      <tr><td>ann-02</td><td>原形 vs partitive 单数</td><td>juotava / juotavaa</td><td>原形 vs partitive 单数</td></tr>
+      <tr><td>ann-05</td><td>特指 vs 不特指</td><td>kahvin / kahvia</td><td>特指 vs 不特指（accusative / partitive）</td></tr>
+      <tr><td>ann-06</td><td>vaikka：本意 vs 引申义</td><td>vaikka</td><td>本意（虽然/尽管）vs 引申义（比如说）</td></tr>
+      <tr><td>ann-07</td><td>vaikka：本意 vs 引申义</td><td>vaikka</td><td>本意 vs 引申义</td></tr>
+    </table>
+  </section>
+
+  <section>
+    <h2>七、工作流程：日常对话里怎么跑</h2>
+    <table>
+      <tr><th>步骤</th><th>谁做</th><th>做什么</th></tr>
+      <tr><td>1. 我挑一个知识点</td><td>我</td><td>从库里挑一个他学过、但有一阵没用的知识点</td></tr>
+      <tr><td>2. 放进日常对话</td><td>我</td><td>聊菜、聊店、聊天气时顺手带进来，一次一个，加注释</td></tr>
+      <tr><td>3. 他看到/用上</td><td>他</td><td>他一看“哦对，这是我学过的”，或者他自己用出来</td></tr>
+      <tr><td>4. 我表扬他</td><td>我</td><td>具体点名他哪用得好，用颜色注明（蓝词、橙注释、绿打勾），生动点</td></tr>
+      <tr><td>5. 记下来</td><td>我</td><td>在数据文件里记一笔：这次用了哪个知识点、谁用的、用对了没、什么时候</td></tr>
+      <tr><td>6. 隔一阵再带</td><td>我</td><td>过几天再把同一个知识点拿出来，用在另一个对话里，反反复复</td></tr>
+    </table>
+  </section>
+
+  <section>
+    <h2>八、活学活用的例子（已经发生的）</h2>
+    <h3>例子 1：Hei, otatsä 鸡肉 vaikka 包菜？</h3>
+    <table>
+      <tr><th>点</th><th>说明</th></tr>
+      <tr><td>otatsä 用对了</td><td>口语的“你要吗”，不是标准语 otat sinä；批注①的 otat + sä 连读，他记得</td></tr>
+      <tr><td>vaikka 用对了</td><td>这里是批注⑥“比如说”，不是⑦“虽然”；两个意思他分得清，挑了对的那个</td></tr>
+      <tr><td>混得自然</td><td>芬兰语 + 中文，聊的是真事（鸡肉和包菜做菜），不是干背单词</td></tr>
+    </table>
+    <h3>例子 2：No voi harmi（哦，真可惜）</h3>
+    <table>
+      <tr><th>点</th><th>说明</th></tr>
+      <tr><td>表达地道</td><td>No voi harmi 是芬兰人日常真会说的感叹，不是课本句</td></tr>
+      <tr><td>注释带上了</td><td>（哦，真可惜）就跟在后面，格式就是我们定的那个</td></tr>
+      <tr><td>情绪对</td><td>说机器转速控制不了，正好是个遗憾的事，voi harmi 用得恰到好处</td></tr>
+    </table>
+  </section>
+
+  <section>
+    <h2>九、角色分工</h2>
+    <table>
+      <tr><th>角色</th><th>负责</th></tr>
+      <tr><td>我（AI）</td><td>学会知识点库；日常对话里一次一个带进来、加注释；他用的时候具体点名表扬、用颜色注明；记使用记录；他忘了我再带</td></tr>
+      <tr><td>他（Seven）</td><td>在日常对话里看到知识点、认出来、用出来；用的时候不用怕错，用错了我会指出来</td></tr>
+    </table>
+  </section>
+
+  <section>
+    <h2>十、相关文件</h2>
+    <table>
+      <tr><th>文件</th><th>位置</th><th>说明</th></tr>
+      <tr><td>知识点库</td><td>goals/yki-3/Little/vocabulary.json</td><td>第一批 6 条已入库</td></tr>
+      <tr><td>学习页</td><td>第一章学习页（artifact space-4）</td><td>批注来源，9 条蓝色手写批注</td></tr>
+      <tr><td>抽认卡</td><td>goals/yki-3/files/nine-questions-flashcards.html</td><td>10 张，他说“发我”时才发</td></tr>
+      <tr><td>SRS 题库</td><td>goals/yki-3/hidden_files/srs-cards.json</td><td>43 张，SM-2 算法</td></tr>
+      <tr><td>方案文档</td><td>goals/yki-3/Use-方案.md</td><td>本页的详细版</td></tr>
+    </table>
+  </section>
+</main>
+</body>
+</html>
