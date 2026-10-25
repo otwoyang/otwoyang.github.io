@@ -77,11 +77,11 @@
   <section>
     <h2>⏰ 时间线与技术要点</h2>
     <ul>
-      <li><b>17:00</b> 自动生产次日节目（cron <code>shop-radio-daily-update</code>）；<b>19:00</b> 自动上传 pCloud「!!AI」/<code>radio/日期/</code>，只跟用户说"已上传"；次晨约 <b>05:50</b> 补睡眠段。</li>
+      <li><b>17:00</b> 自动生产次日节目（cron <code>shop-radio-daily-update</code>）；<b>19:00</b> 自动传到 Mac mini 本地 <code>~/Documents/radio/</code>，只跟用户说"已传到 Mac mini"；次晨约 <b>05:50</b> 补睡眠段。</li>
       <li>时长：约 2.3–2.5 小时（用户接受，不补时长）。只传分段、不拼整版；文件名纯 ASCII + 两位数序号前缀，音乐与语音穿插。</li>
       <li>主持人"阿莽"，固定男声 <code>avocado_v2:MAI_03</code>；人声音量高、音乐音量低；TTS 文案用短句，一句话只讲一件事。</li>
       <li>TTS 必须走验证工具 <code>tools/tts_synth_verify.py</code>（逐句合成+验时长，超 1.5 倍判重复丢弃重试），上传前再用 <code>tools/tts_check_segments.py</code> 验一遍，REJECT 的不许上传。</li>
-      <li>上传只用 ormandme 账号，<b>绝不碰用户主账号</b>；定位文件夹永远用 folderid 直达，绝不按名字搜索。</li>
+      <li>传 Mac mini 用 scp 经 Tailscale（2026-10-25 改版：pCloud 上传因每天要授权停传，改传 Mac mini 本地）。</li>
       <li>每段节目带 👍👎，静默 POST 到 Google 表单投票箱，点踩自动跳过。</li>
     </ul>
   </section>
