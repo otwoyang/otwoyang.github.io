@@ -71,35 +71,33 @@
         <div class="brow from"><span class="rowlabel">从</span>
           <button class="chip">家</button>
           <button class="chip">店</button>
+          <button class="chip">Noodle Lab</button>
+          <button class="chip">Biang</button>
+          <button class="chip">Prisma Kaleva</button>
+          <button class="chip">Bauhaus</button>
+          <button class="chip">Hervanta Duo</button>
+          <button class="chip">IKEA Tampere</button>
+          <button class="chip">Verkkokauppa Pirkkala</button>
           <button class="chip">Kespro</button>
-          <button class="chip">Lidl</button>
-          <button class="chip">Hervanta</button>
-          <button class="chip">Lentävänniemi</button>
-          <button class="chip">Prisma</button>
-          <button class="chip">火车站</button>
-          <button class="chip">Ratina</button>
-          <button class="chip">Koskikeskus</button>
-          <button class="chip">机场</button>
         </div>
         <div class="brow to"><span class="rowlabel">到</span>
           <button class="chip">家</button>
           <button class="chip">店</button>
+          <button class="chip">Noodle Lab</button>
+          <button class="chip">Biang</button>
+          <button class="chip">Prisma Kaleva</button>
+          <button class="chip">Bauhaus</button>
+          <button class="chip">Hervanta Duo</button>
+          <button class="chip">IKEA Tampere</button>
+          <button class="chip">Verkkokauppa Pirkkala</button>
           <button class="chip">Kespro</button>
-          <button class="chip">Lidl</button>
-          <button class="chip">Hervanta</button>
-          <button class="chip">Lentävänniemi</button>
-          <button class="chip">Prisma</button>
-          <button class="chip">火车站</button>
-          <button class="chip">Ratina</button>
-          <button class="chip">Koskikeskus</button>
-          <button class="chip">机场</button>
         </div>
       </div>
     </section>
     <section class="group g-shop">
       <h2>店里</h2>
       <div class="btns">
-        <button class="btn todo">听电台</button>
+        <button class="btn done" id="radioBtn">听电台</button>
         <button class="btn todo">离开</button>
         <button class="btn todo">到了</button>
         <button class="btn todo">看店里</button>
@@ -114,7 +112,7 @@
         <button class="btn todo">推菜到小C</button>
         <button class="btn todo">选菜</button>
         <button class="btn todo">学芬兰语</button>
-        <button class="btn todo">睡眠分析</button>
+        <button class="btn done" id="sleepBtn">睡眠分析</button>
         <button class="btn todo">远程屏幕</button>
         <button class="btn todo">关显示器</button>
         <button class="btn todo">下 X 视频</button>
@@ -124,17 +122,17 @@
     <section class="group g-diary">
       <h2>日记</h2>
       <div class="btns">
-        <button class="btn todo">写日记</button>
+        <button class="btn done" id="diaryBtn">写日记</button>
       </div>
     </section>
   </main>
-  <div id="echo">公交能用了 · 其他按钮还在做</div>
+  <div id="echo">公交、电台、日记、睡眠能用了 · 其他按钮还在做</div>
 </div>
 <script>
   var SERVER = 'http://100.83.160.13:8765';
   var counts = {};
   document.querySelectorAll('.btn').forEach(function (b) {
-    if (b.id === 'goBtn') return;
+    if (b.id) return;
     b.addEventListener('click', function () {
       var name = b.textContent.trim();
       counts[name] = (counts[name] || 0) + 1;
@@ -143,6 +141,15 @@
   });
   document.getElementById('goBtn').addEventListener('click', function () {
     location.href = SERVER + '/bus/go';
+  });
+  document.getElementById('radioBtn').addEventListener('click', function () {
+    location.href = SERVER + '/radio';
+  });
+  document.getElementById('diaryBtn').addEventListener('click', function () {
+    location.href = SERVER + '/diary';
+  });
+  document.getElementById('sleepBtn').addEventListener('click', function () {
+    location.href = SERVER + '/sleep';
   });
   var bus = { from: null, to: null };
   function busEcho() {
