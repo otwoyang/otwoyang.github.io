@@ -21,8 +21,12 @@
   .group { background: #fff; border-radius: 12px; padding: 8px; display: flex; flex-direction: column; gap: 6px; min-height: 0; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
   .group h2 { font-size: clamp(13px, 1.7vw, 17px); }
   .btns { flex: 1; min-height: 0; display: grid; gap: 6px; }
-  .g-trip .btns { grid-template-columns: repeat(3, 1fr); grid-auto-rows: minmax(0, 1fr); }
-  .g-trip .btn.go { grid-column: 1 / -1; }
+  .g-trip .btns { display: flex; flex-direction: column; gap: 6px; }
+  .g-trip .btn.go { width: 100%; flex: 0 0 auto; }
+  .brow { display: flex; flex-wrap: wrap; gap: 4px; align-items: center; }
+  .brow .rowlabel { font-size: calc(clamp(12px, 1.6vw, 17px) * var(--scale)); color: #666; flex: 0 0 auto; }
+  .chip { font-family: monospace; font-size: calc(clamp(11px, 1.4vw, 15px) * var(--scale)); line-height: 1.2; border: none; border-radius: 8px; padding: 5px 7px; cursor: pointer; background: #e0e0e0; color: #888; }
+  .chip.sel { background: #555; color: #fff; }
   .g-shop .btns, .g-life .btns { grid-template-columns: repeat(2, 1fr); grid-auto-rows: minmax(0, 1fr); }
   .g-diary { grid-column: 1 / -1; flex-direction: row; align-items: center; }
   .g-diary h2 { flex: 0 0 auto; }
@@ -46,7 +50,6 @@
     .g-shop { grid-column: 1; grid-row: 2; }
     .g-life { grid-column: 1; grid-row: 3; }
     .g-diary { grid-column: 1; grid-row: 4; flex-direction: row; align-items: center; }
-    .g-trip .btns { grid-template-columns: repeat(4, 1fr); }
     .g-shop .btns { grid-template-columns: repeat(4, 1fr); }
     .g-life .btns { grid-template-columns: repeat(4, 1fr); }
     .scale input { width: 90px; }
@@ -64,49 +67,64 @@
     <section class="group g-trip">
       <h2>出行</h2>
       <div class="btns">
-        <button class="btn done go">去上班 家→店</button>
-        <button class="btn todo">家→Kespro</button>
-        <button class="btn todo">家→Lidl</button>
-        <button class="btn todo">店→Lidl</button>
-        <button class="btn todo">店→家</button>
-        <button class="btn todo">家→Hervanta</button>
-        <button class="btn todo">家→Lentävänniemi</button>
-        <button class="btn todo">家→Prisma</button>
-        <button class="btn todo">家→火车站</button>
-        <button class="btn todo">家→Ratina</button>
-        <button class="btn todo">家→Koskikeskus</button>
-        <button class="btn todo">家→机场</button>
+        <button class="btn todo go">去上班 家→店</button>
+        <div class="brow from"><span class="rowlabel">从</span>
+          <button class="chip">家</button>
+          <button class="chip">店</button>
+          <button class="chip">Kespro</button>
+          <button class="chip">Lidl</button>
+          <button class="chip">Hervanta</button>
+          <button class="chip">Lentävänniemi</button>
+          <button class="chip">Prisma</button>
+          <button class="chip">火车站</button>
+          <button class="chip">Ratina</button>
+          <button class="chip">Koskikeskus</button>
+          <button class="chip">机场</button>
+        </div>
+        <div class="brow to"><span class="rowlabel">到</span>
+          <button class="chip">家</button>
+          <button class="chip">店</button>
+          <button class="chip">Kespro</button>
+          <button class="chip">Lidl</button>
+          <button class="chip">Hervanta</button>
+          <button class="chip">Lentävänniemi</button>
+          <button class="chip">Prisma</button>
+          <button class="chip">火车站</button>
+          <button class="chip">Ratina</button>
+          <button class="chip">Koskikeskus</button>
+          <button class="chip">机场</button>
+        </div>
       </div>
     </section>
     <section class="group g-shop">
       <h2>店里</h2>
       <div class="btns">
-        <button class="btn done">离开</button>
-        <button class="btn done">到了</button>
-        <button class="btn done">看店里</button>
-        <button class="btn done">听电台</button>
-        <button class="btn done">今日营业额</button>
-        <button class="btn done">传发票</button>
-        <button class="btn done">拉 Lidl 小票</button>
+        <button class="btn todo">听电台</button>
+        <button class="btn todo">离开</button>
+        <button class="btn todo">到了</button>
+        <button class="btn todo">看店里</button>
+        <button class="btn todo">今日营业额</button>
+        <button class="btn todo">传发票</button>
+        <button class="btn todo">拉 Lidl 小票</button>
       </div>
     </section>
     <section class="group g-life">
       <h2>生活</h2>
       <div class="btns">
-        <button class="btn done">推菜到小C</button>
-        <button class="btn done">选菜</button>
-        <button class="btn done">学芬兰语</button>
-        <button class="btn done">睡眠分析</button>
+        <button class="btn todo">推菜到小C</button>
+        <button class="btn todo">选菜</button>
+        <button class="btn todo">学芬兰语</button>
+        <button class="btn todo">睡眠分析</button>
         <button class="btn todo">远程屏幕</button>
-        <button class="btn done">关显示器</button>
-        <button class="btn done">下 X 视频</button>
-        <button class="btn done">验登录</button>
+        <button class="btn todo">关显示器</button>
+        <button class="btn todo">下 X 视频</button>
+        <button class="btn todo">验登录</button>
       </div>
     </section>
     <section class="group g-diary">
       <h2>日记</h2>
       <div class="btns">
-        <button class="btn done">写日记</button>
+        <button class="btn todo">写日记</button>
       </div>
     </section>
   </main>
@@ -119,6 +137,29 @@
       var name = b.textContent.trim();
       counts[name] = (counts[name] || 0) + 1;
       document.getElementById('echo').textContent = '刚按了『' + name + '』· 第 ' + counts[name] + ' 下';
+    });
+  });
+  var bus = { from: null, to: null };
+  function busEcho() {
+    var e = document.getElementById('echo');
+    if (bus.from && bus.to) e.textContent = '从 ' + bus.from + ' 到 ' + bus.to;
+    else if (bus.from) e.textContent = '从 ' + bus.from + ' 出发，选到哪里？';
+    else if (bus.to) e.textContent = '到 ' + bus.to + '，从哪里出发？';
+  }
+  document.querySelectorAll('.brow.from .chip').forEach(function (c) {
+    c.addEventListener('click', function () {
+      document.querySelectorAll('.brow.from .chip').forEach(function (x) { x.classList.remove('sel'); });
+      c.classList.add('sel');
+      bus.from = c.textContent.trim();
+      busEcho();
+    });
+  });
+  document.querySelectorAll('.brow.to .chip').forEach(function (c) {
+    c.addEventListener('click', function () {
+      document.querySelectorAll('.brow.to .chip').forEach(function (x) { x.classList.remove('sel'); });
+      c.classList.add('sel');
+      bus.to = c.textContent.trim();
+      busEcho();
     });
   });
   var slider = document.getElementById('scale');
