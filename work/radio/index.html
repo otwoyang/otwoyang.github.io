@@ -77,7 +77,7 @@
   <section>
     <h2>⏰ 时间线与技术要点</h2>
     <ul>
-      <li><b>17:00</b> 自动生产次日节目（cron <code>shop-radio-daily-update</code>）；<b>19:00</b> 自动传到 Mac mini 本地 <code>~/Documents/radio/</code>，只跟用户说"已传到 Mac mini"；次晨约 <b>05:50</b> 补睡眠段。</li>
+      <li><b>17:00</b> 自动生产次日节目（cron <code>shop-radio-daily-update</code>）；<b>19:00</b> 自动传到 Mac mini 本地 <code>~/Documents/radio/YYYY-MM-DD/</code>（按节目日期建文件夹，不堆根下），只跟用户说"已传到 Mac mini"；次晨约 <b>05:50</b> 补睡眠段。</li>
       <li>时长：约 2.3–2.5 小时（用户接受，不补时长）。只传分段、不拼整版；文件名纯 ASCII + 两位数序号前缀，音乐与语音穿插。</li>
       <li>主持人"阿莽"，固定男声 <code>avocado_v2:MAI_03</code>；人声音量高、音乐音量低；TTS 文案用短句，一句话只讲一件事。</li>
       <li>TTS 必须走验证工具 <code>tools/tts_synth_verify.py</code>（逐句合成+验时长，超 1.5 倍判重复丢弃重试），上传前再用 <code>tools/tts_check_segments.py</code> 验一遍，REJECT 的不许上传。</li>
