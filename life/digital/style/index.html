@@ -6,43 +6,23 @@
 <title>我喜欢的风格设计 · 数字世界地图</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; background: #f5f5f5; color: #333; }
-  header { background: #2c3e50; color: white; padding: 20px; }
-  header a { color: #7fb3d5; text-decoration: none; font-size: 14px; }
-  header h1 { font-size: 24px; margin: 8px 0 4px; }
-  header p { opacity: 0.8; font-size: 14px; }
-  main { max-width: 800px; margin: 20px auto; padding: 0 16px 40px; }
-  section { background: white; border-radius: 8px; padding: 20px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
-  h2 { font-size: 18px; margin-bottom: 12px; color: #2c3e50; }
+  body { font-family: "Courier New", monospace, -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; background: #050505; background-image: repeating-conic-gradient(#171717 0% 25%, #050505 0% 50%); background-size: 24px 24px; color: #fff; }
+  header { background: #050505; border-bottom: 6px solid #20FF2F; color: #fff; padding: 20px; }
+  header a { color: #20FF2F; text-decoration: none; font-size: 14px; }
+  header h1 { font-size: 26px; margin: 8px 0 4px; color: #20FF2F; }
+  header p { font-size: 14px; color: #fff; }
+  main { max-width: 900px; margin: 20px auto; padding: 0 16px 40px; }
+  section { background: #050505; border: 3px solid #20FF2F; border-radius: 2px; padding: 20px; margin-bottom: 16px; }
+  h2 { font-size: 20px; margin-bottom: 12px; color: #20FF2F; border-bottom: 2px solid #248C22; padding-bottom: 6px; }
+  h3 { font-size: 17px; margin: 16px 0 8px; color: #fff; }
   li { line-height: 1.8; margin-left: 20px; }
-  code { background: #f0f0f0; padding: 2px 6px; border-radius: 4px; font-size: 13px; }
-  .key { background: #f7f9fb; border-left: 4px solid #2c3e50; padding: 10px 14px; line-height: 1.8; }
-</style>
-
-<style>
-  /* 我喜欢的风格设计 · 全站统一样式（2026-11-02）：只换样式，不改内容与功能 */
-  body { background: #050505 !important; background-image: repeating-conic-gradient(#171717 0% 25%, #050505 0% 50%) !important; background-size: 24px 24px !important; color: #fff !important; }
-  header { background: #050505 !important; border-bottom: 6px solid #20FF2F !important; color: #fff !important; }
-  header a { color: #20FF2F !important; }
-  header h1, header p { color: #fff !important; }
-  main, .page { background: transparent !important; }
-  section, .group, #setup { background: #050505 !important; border: 3px solid #20FF2F !important; border-radius: 2px !important; box-shadow: none !important; color: #fff !important; }
-  h1, h2 { color: #20FF2F !important; }
-  h2 { border-bottom: 2px solid #248C22 !important; padding-bottom: 6px !important; }
-  a { color: #20FF2F !important; }
-  code { background: #171717 !important; border: 1px solid #248C22 !important; color: #fff !important; }
-  table, th, td { border-color: #248C22 !important; color: #fff !important; }
-  th { background: #171717 !important; }
-  .key { background: #171717 !important; border-left: 4px solid #20FF2F !important; color: #fff !important; }
-  .warn { background: #171717 !important; border-left: 4px solid #20FF2F !important; color: #fff !important; }
-  .status-ok { color: #20FF2F !important; }
-  .legend, .rowlabel { color: #aaa !important; }
-  .legend b.done { color: #20FF2F !important; }
-  .btn.done, .chip.sel { background: #248C22 !important; color: #fff !important; }
-  .btn.todo { background: #171717 !important; color: #888 !important; }
-  .chip { background: #171717 !important; color: #fff !important; border: 1px solid #248C22 !important; }
-  #echo { background: #171717 !important; border: 1px solid #248C22 !important; }
-  .order { border: 3px solid #248C22 !important; }
+  p { line-height: 1.8; }
+  code { background: #171717; border: 1px solid #248C22; padding: 2px 6px; border-radius: 2px; font-size: 13px; color: #fff; }
+  table { border-collapse: collapse; margin: 8px 0; width: 100%; }
+  th, td { border: 1px solid #248C22; padding: 6px 10px; text-align: left; font-size: 13.5px; line-height: 1.6; color: #fff; }
+  th { background: #171717; color: #20FF2F; }
+  .key { background: #171717; border-left: 4px solid #20FF2F; padding: 10px 14px; line-height: 1.8; }
+  a { color: #20FF2F; }
 </style>
 </head>
 <body>
@@ -53,38 +33,169 @@
 </header>
 <main>
   <section>
-    <p class="key">定版：布局用大图标网格，风格用 RetroArch RGUI 的绿框、棋盘格黑底和像素字体。完整数值版在《我喜欢的风格设计》PDF（7 页）里，改数值先改那份文档再改实现。</p>
+    <h2>定版</h2>
+    <p class="key">一句话定义：图标网格的布局，像素图标、像素字体，选中的地方整块变绿。布局用大图标网格，风格用 RetroArch RGUI 的绿框、棋盘格黑底和像素字体。以后做任何界面，先拿这张图对照。</p>
+    <p style="margin-top:10px">定版标准样图：顶部绿字标题 MAIN MENU，4 列 × 3 行共 12 个像素图标（WEB BROWSER、FILE MANAGER、TERMINAL、MEDIA PLAYER、RETRO GAMES、CODE EDITOR、PYTHON、GPIO TOOLS、SYSTEM SETTINGS、VNC SERVER、ARDUINO、PI MONITOR），选中的 WEB BROWSER 整块变绿，底部 HOME / APPS / SETTINGS 三页签，当前页签 APPS 变绿。</p>
+    <p style="margin-top:10px">本页就是完整版，不依赖 PDF。改本方案里的任何数值，先改本页，再改实现，不许只改实现不改文档。</p>
   </section>
   <section>
-    <h2>风格构成</h2>
+    <h2>风格构成：四件事，缺一不可</h2>
+    <table>
+      <tr><th>构成</th><th>是什么</th><th>为什么</th></tr>
+      <tr><td>黑底棋盘格</td><td>纯黑打底，上面铺一层深灰棋盘格纹</td><td>这是 RGUI 的底子，也是复古游戏机的味道；格纹让大片黑不空、不闷</td></tr>
+      <tr><td>亮绿粗框</td><td>整个界面一圈粗绿框，分区也用绿线</td><td>荧光绿是这套风格的签名，一眼认得出；粗框才有像素味，细线没有</td></tr>
+      <tr><td>像素图标</td><td>图标必须是像素画法：方块颗粒、硬边、无渐变</td><td>入口靠图标认，不靠文字找；像素颗粒和字体、边框是同一家人</td></tr>
+      <tr><td>像素字体</td><td>英文全大写像素字，标题、标签、页签都用它</td><td>字本身就是装饰；换成圆润的现代字体，整个风格立刻散掉</td></tr>
+    </table>
+    <h3>它不是什么</h3>
     <ul>
-      <li>黑底棋盘格、亮绿粗框、像素图标、像素字体，四件事缺一不可</li>
-      <li>布局：4 列 × 3 行大图标，一屏 12 个入口，方向键上下 + A 确认 + B 返回</li>
-      <li>选中：整块变绿，不只变字色；其他图标白字白图标</li>
-      <li>底部页签：HOME / APPS / SETTINGS，当前页签变绿</li>
+      <li>不是现代扁平风：没有圆角卡片、没有柔和阴影、没有渐变色块</li>
+      <li>不是彩色活泼风：除了绿、黑、白，不许再引入装饰色</li>
+      <li>不是纯文字列表：RGUI 的列表只作风格来源，正式界面永远用图标网格做入口</li>
+      <li>不是照片风：界面里不放写实照片当背景，图就是像素图标本身</li>
+    </ul>
+    <p style="margin-top:10px">风格来源：RetroArch 的 RGUI 菜单（绿字黑底、棋盘格、绿框、选中行变绿带 &gt; 标记）。本方案只取它的颜色、边框和像素字，布局不用它的文字列表，改用图标网格。</p>
+  </section>
+  <section>
+    <h2>颜色规范：只用绿、黑、白</h2>
+    <p>下面色值全部从定版图实测取样，不是凭感觉配的。新页面直接抄色值，不许用取色器以外的近似绿。</p>
+    <table>
+      <tr><th>名称</th><th>HEX</th><th>RGB</th><th>用在哪</th></tr>
+      <tr><td>签名绿</td><td><code>#20FF2F</code></td><td>32, 255, 47</td><td>外框、标题字、选中字、当前页签、图标描边</td></tr>
+      <tr><td>选中绿</td><td><code>#248C22</code></td><td>36, 140, 34</td><td>选中项整块填充的底色（选中图标、选中按钮）</td></tr>
+      <tr><td>棋盘黑 A</td><td><code>#050505</code></td><td>5, 5, 5</td><td>棋盘格深格、页面最底层背景</td></tr>
+      <tr><td>棋盘灰 B</td><td><code>#171717</code></td><td>23, 23, 23</td><td>棋盘格浅格，与黑 A 交替铺满背景</td></tr>
+      <tr><td>正文白</td><td><code>#FFFFFF</code></td><td>255, 255, 255</td><td>正文字、未选中图标、未选中标签</td></tr>
+      <tr><td>次级灰</td><td><code>#B8B8B8</code></td><td>184, 184, 184</td><td>说明文字、图注、次要信息、禁用态文字</td></tr>
+      <tr><td>页签底</td><td><code>#111111</code></td><td>17, 17, 17</td><td>底部页签、按钮、输入框的填充底色</td></tr>
+    </table>
+    <h3>配比与规矩</h3>
+    <ul>
+      <li>配比：黑约 70%，白约 20%，绿约 10%。绿是点睛，不能大面积铺；大面积绿只有一种情况：选中项整块填选中绿</li>
+      <li>选中 = 整块变绿：字和图标变签名绿或纯黑，不许只描个边了事</li>
+      <li>功能色例外，仅用于状态：报错红 <code>#FF5147</code>、提醒黄 <code>#FFC400</code>。只出现在提示和状态点上，永远不做装饰、不做标题、不做边框</li>
+      <li>禁止：任何渐变、任何半透明彩色、任何绿以外的装饰色、灰阶以外的中性色（暖灰、米色都不行）</li>
+      <li>对比：白字和绿字只放在黑底上；绿底（#248C22）上只放黑字或白字，不放亮绿字</li>
+    </ul>
+    <h3>常用组合速查</h3>
+    <table>
+      <tr><th>场景</th><th>前景</th><th>背景</th></tr>
+      <tr><td>默认页面</td><td>正文白 #FFFFFF</td><td>棋盘黑 #050505 / #171717</td></tr>
+      <tr><td>标题行</td><td>签名绿 #20FF2F</td><td>棋盘黑 #050505 / #171717</td></tr>
+      <tr><td>选中项</td><td>签名绿 #20FF2F 或纯黑</td><td>选中绿 #248C22 整块填充</td></tr>
+      <tr><td>报错提示</td><td>报错红 #FF5147</td><td>页签底 #111111，红框 3px</td></tr>
+    </table>
+  </section>
+  <section>
+    <h2>文字规范：像素字当家</h2>
+    <table>
+      <tr><th>用途</th><th>字体</th><th>规矩</th></tr>
+      <tr><td>英文 / 数字标题与标签</td><td>像素字体（Press Start 2P 一类方块像素字）</td><td>全大写；字距 1–2px；只用于标题、标签、页签、按钮</td></tr>
+      <tr><td>中文标题</td><td>粗体黑体（Noto Sans SC Bold / 思源黑体粗体）</td><td>字距 2px；与英文像素字同行时以像素字高度对齐</td></tr>
+      <tr><td>中文正文</td><td>常规黑体（Noto Sans SC Regular）</td><td>不用像素字排长中文（笔画会糊），正文求清楚</td></tr>
+      <tr><td>数字 / 编号 / 代码</td><td>等宽字体（JetBrains Mono / Noto Sans Mono）</td><td>序号、时间、参数一律等宽，方便对齐扫读</td></tr>
+    </table>
+    <h3>字号层级（网站基准，单位 px）</h3>
+    <table>
+      <tr><th>层级</th><th>字号 / 行高</th><th>颜色</th><th>用在哪</th></tr>
+      <tr><td>主标题</td><td>40 / 52</td><td>签名绿</td><td>页面大标题，如 MAIN MENU</td></tr>
+      <tr><td>二级标题</td><td>26 / 36</td><td>签名绿</td><td>分区块标题，前面带 &gt; 标记</td></tr>
+      <tr><td>三级标题</td><td>20 / 28</td><td>白色</td><td>卡片标题、小节标题</td></tr>
+      <tr><td>图标标签</td><td>16 / 22</td><td>白（选中变绿）</td><td>图标下方名称，全大写英文或短中文</td></tr>
+      <tr><td>正文</td><td>16 / 27</td><td>白色</td><td>段落正文，行高不小于 1.6 倍</td></tr>
+      <tr><td>说明文字</td><td>13 / 20</td><td>次级灰</td><td>图注、备注、次要说明</td></tr>
+      <tr><td>页签 / 按钮字</td><td>18 / 24</td><td>白（当前变绿）</td><td>底部页签与按钮，如 HOME / APPS</td></tr>
+    </table>
+    <ul>
+      <li>最小字号：任何屏幕上不小于 12px；小屏宁可减内容，不许缩字</li>
+      <li>对齐：标题和标签居中或左对齐二选一，同一页不混用；正文一律左对齐</li>
+      <li>英文标签：永远全大写，词与词之间一个空格，不写句号</li>
     </ul>
   </section>
   <section>
-    <h2>颜色</h2>
+    <h2>尺寸与布局：一切走 4px 网格</h2>
+    <table>
+      <tr><th>项目</th><th>数值</th><th>说明</th></tr>
+      <tr><td>间距阶梯</td><td>4 / 8 / 16 / 24 / 32 / 48 / 64 px</td><td>内边距、元素间隔、区块间隔只从这组数里选</td></tr>
+      <tr><td>页面外框</td><td>6 px（小屏 4 px）</td><td>签名绿粗框，绕整个界面一圈，四角直角</td></tr>
+      <tr><td>组件边框</td><td>3 px</td><td>卡片、按钮、图标格、输入框的边框粗细</td></tr>
+      <tr><td>分隔线</td><td>2 px</td><td>区块之间、列表行之间的绿线或灰线</td></tr>
+      <tr><td>圆角</td><td>0–2 px</td><td>基本等于直角；需要转角时用像素阶梯角，不用圆弧</td></tr>
+      <tr><td>棋盘格</td><td>24 × 24 px（大屏 32）</td><td>黑 A 与灰 B 交替，全站同一个格子大小</td></tr>
+      <tr><td>图标本体</td><td>96 × 96 px（小屏 64）</td><td>像素图标的设计画布；放大缩小只按整数倍，不拉伸</td></tr>
+      <tr><td>图标格子</td><td>176 × 176 px 起</td><td>图标 + 标签的整格；格与格间距 16–24 px</td></tr>
+      <tr><td>内容最大宽</td><td>1200 px</td><td>网站正文区上限，两侧留白回到棋盘格黑底</td></tr>
+      <tr><td>页边距</td><td>桌面 32 px / 手机 16 px</td><td>内容不贴框，框与内容之间永远留一口气</td></tr>
+    </table>
+    <h3>网格布局（照定版图）</h3>
     <ul>
-      <li>签名绿 <code>#20FF2F</code>、选中绿 <code>#248C22</code></li>
-      <li>棋盘黑 <code>#050505</code>、棋盘灰 <code>#171717</code>、正文白、次级灰、页签底</li>
-      <li>配比：黑 70% / 白 20% / 绿 10%；功能红黄只准用于状态</li>
+      <li>入口区：桌面 4 列，行数按入口数走；首页核心入口 12 个 = 4 列 × 3 行，和定版图一致</li>
+      <li>小屏：手机竖屏改 3 列，更小的屏改 2 列；列数变，图标和字不缩</li>
+      <li>底部页签：固定 3 个等宽页签（或按实际栏目等分），高度 56–64 px，永远贴底</li>
+      <li>顺序：最常用的排左上第一位；选中态出现时网格不跳位、不重排</li>
+    </ul>
+    <h3>屏幕断点（网站）</h3>
+    <table>
+      <tr><th>屏幕宽</th><th>列数</th><th>图标大小</th><th>外框 / 棋盘格</th></tr>
+      <tr><td>≥ 1024 px</td><td>4 列</td><td>96 px</td><td>6 px / 32 px</td></tr>
+      <tr><td>640–1023 px</td><td>3 列</td><td>96 px</td><td>6 px / 24 px</td></tr>
+      <tr><td>&lt; 640 px</td><td>2–3 列</td><td>64 px</td><td>4 px / 24 px</td></tr>
+    </table>
+  </section>
+  <section>
+    <h2>组件规范：五类组件定死样子</h2>
+    <table>
+      <tr><th>组件</th><th>长什么样</th><th>状态规则</th></tr>
+      <tr><td>图标格（入口）</td><td>像素图标居中，标签在图标正下方，全大写</td><td>常态白图标白字；悬停描 3px 绿框；选中整块填选中绿、图标字变亮绿</td></tr>
+      <tr><td>按钮</td><td>页签底 #111111 填充，3px 绿框，像素字居中</td><td>主按钮可直接绿底黑字；按下 / 选中整块变绿；禁用变灰框灰字</td></tr>
+      <tr><td>底部页签</td><td>18px 等宽分格，格间绿线，像素字</td><td>当前页签整格变绿（字变亮绿或底填选中绿），其余白字</td></tr>
+      <tr><td>菜单列表</td><td>RGUI 黑底，3px 绿框，像素字，单列文字行，行高 40px，左对齐</td><td>选中行字变绿并在行首出 &gt; 标记；只用于二级菜单，不做首页</td></tr>
+      <tr><td>输入框</td><td>页签底 #111111 填充，2px 白 / 灰框，白字，光标绿</td><td>聚焦时边框变签名绿；报错时边框变功能红并给红字提示</td></tr>
+    </table>
+    <p style="margin-top:10px">照着抄的例子：&gt; LOAD CORE、LOAD CONTENT、SCAN CONTENT、SETTINGS。</p>
+    <h3>状态速查</h3>
+    <table>
+      <tr><th>状态</th><th>底色</th><th>字与边框</th></tr>
+      <tr><td>常态</td><td>透明（露出棋盘格）或 #111111</td><td>白字，白框或绿框 3px</td></tr>
+      <tr><td>悬停</td><td>不变</td><td>边框变签名绿 3px，字不变</td></tr>
+      <tr><td>选中</td><td>选中绿 #248C22 整块填充</td><td>字变签名绿或纯黑，可加亮绿外发光</td></tr>
+      <tr><td>禁用</td><td>#111111</td><td>次级灰字 #B8B8B8，灰框，不响应点击</td></tr>
+      <tr><td>报错</td><td>#111111</td><td>功能红 #FF5147 边框与提示字</td></tr>
+    </table>
+    <ul>
+      <li>动效：只允许瞬间切换和像素式闪烁，不做平滑渐变动画；状态变化要在 100ms 内看得出</li>
+      <li>阴影：不用柔和投影；要突出选中项时用一圈亮绿外发光（照定版图选中格的样子）</li>
+      <li>新组件：先在本页五类里找能套的，实在没有，按同样的框、色、字推导，不许自创风格</li>
     </ul>
   </section>
   <section>
-    <h2>文字与尺寸</h2>
+    <h2>落地规则：以后都照这份做</h2>
+    <h3>网站怎么套</h3>
     <ul>
-      <li>英文像素字全大写、中文粗体、正文黑体、数字等宽；主标题 40px 到说明文字 13px，最小 12px</li>
-      <li>4px 基准网格；外框 6px、组件框 3px、分隔线 2px、圆角 0–2px；棋盘格 24px；图标 96px（小屏 64px）、图标格 176px；内容最大宽 1200px</li>
-      <li>网站断点：≥1024 四列、640–1023 三列、&lt;640 两到三列</li>
+      <li>整站底子：黑棋盘格背景 + 绿外框是站点的脸，任何页面不得换底色、不得去掉格纹</li>
+      <li>首页：照定版图 —— 顶部标题、图标网格入口、底部页签，三段式不变</li>
+      <li>内页：标题带 &gt; 标记，内容分区用 2px 绿线，长内容用菜单列表组件组织</li>
+      <li>图片：站内图优先像素风插图；必须用照片时，照片加 3px 绿框，当作“贴纸”贴在黑底上，不许照片铺满当背景</li>
+      <li>小屏设备界面（如中屏启动器）：同一套数值等比缩小，外框 4px、图标 64px，规矩一条不少</li>
     </ul>
-  </section>
-  <section>
-    <h2>以后怎么用</h2>
+    <h3>禁忌清单（出现一条就是跑偏）</h3>
     <ul>
-      <li>新网站、新页面先套这套颜色、字体、边框和图标格，不另起一套风格</li>
-      <li>中屏（PocketTerm35）是这套风格的第一个落地：大图标 + RGUI 风格，见中屏方案 PDF</li>
+      <li>圆角大于 2px、卡片柔和阴影、毛玻璃效果 —— 全禁</li>
+      <li>蓝、紫、粉、橙等装饰色，任何渐变色 —— 全禁</li>
+      <li>圆润的现代线性图标、表情包式彩色图标 —— 全禁，图标必须像素画法</li>
+      <li>正文用宋体、楷体等衬线体，英文标签写小写 —— 全禁</li>
+      <li>选中态只改字色不填底、或用下划线表示选中 —— 全禁，必须整块变绿</li>
+    </ul>
+    <h3>验收清单（交付前逐项打勾）</h3>
+    <ul>
+      <li>□ 背景是黑棋盘格，格子大小 24px（大屏 32px），全站一致</li>
+      <li>□ 外框和组件框是签名绿 #20FF2F，粗细 6px / 3px，直角</li>
+      <li>□ 颜色只有绿、黑、白、灰，功能红黄只出现在状态提示</li>
+      <li>□ 英文标签全大写像素字，字号走文字层级表，最小 12px</li>
+      <li>□ 图标全是像素画法，大小 96px（小屏 64px），整数倍缩放</li>
+      <li>□ 选中项整块填 #248C22，和定版图的 WEB BROWSER 一样</li>
+      <li>□ 间距只用 4 / 8 / 16 / 24 / 32 / 48 / 64 这组数</li>
+      <li>□ 把成品和定版图并排看，一眼是同一家人</li>
     </ul>
   </section>
 </main>
