@@ -18,6 +18,32 @@
   code { background: #f0f0f0; padding: 2px 6px; border-radius: 4px; font-size: 13px; }
   .status-ok { color: #27ae60; font-weight: bold; }
 </style>
+
+<style>
+  /* 我喜欢的风格设计 · 全站统一样式（2026-11-02）：只换样式，不改内容与功能 */
+  body { background: #050505 !important; background-image: repeating-conic-gradient(#171717 0% 25%, #050505 0% 50%) !important; background-size: 24px 24px !important; color: #fff !important; }
+  header { background: #050505 !important; border-bottom: 6px solid #20FF2F !important; color: #fff !important; }
+  header a { color: #20FF2F !important; }
+  header h1, header p { color: #fff !important; }
+  main, .page { background: transparent !important; }
+  section, .group, #setup { background: #050505 !important; border: 3px solid #20FF2F !important; border-radius: 2px !important; box-shadow: none !important; color: #fff !important; }
+  h1, h2 { color: #20FF2F !important; }
+  h2 { border-bottom: 2px solid #248C22 !important; padding-bottom: 6px !important; }
+  a { color: #20FF2F !important; }
+  code { background: #171717 !important; border: 1px solid #248C22 !important; color: #fff !important; }
+  table, th, td { border-color: #248C22 !important; color: #fff !important; }
+  th { background: #171717 !important; }
+  .key { background: #171717 !important; border-left: 4px solid #20FF2F !important; color: #fff !important; }
+  .warn { background: #171717 !important; border-left: 4px solid #20FF2F !important; color: #fff !important; }
+  .status-ok { color: #20FF2F !important; }
+  .legend, .rowlabel { color: #aaa !important; }
+  .legend b.done { color: #20FF2F !important; }
+  .btn.done, .chip.sel { background: #248C22 !important; color: #fff !important; }
+  .btn.todo { background: #171717 !important; color: #888 !important; }
+  .chip { background: #171717 !important; color: #fff !important; border: 1px solid #248C22 !important; }
+  #echo { background: #171717 !important; border: 1px solid #248C22 !important; }
+  .order { border: 3px solid #248C22 !important; }
+</style>
 </head>
 <body>
 <header>
@@ -40,7 +66,7 @@
     <h2>✅ 当前状态 <span class="status-ok">（2026-10-20 整套系统上线，试运行中）</span></h2>
     <ul>
       <li>2026-10-20 完成搭建并通过实弹演习（真人进区走动 → 截图报警送达 Muse app，实测延迟约 1 分钟，经 Muse 链路）</li>
-      <li>试运行已结束，系统正式在用；布防/撤防只剩按键和聊天两条路</li>
+      <li>试运行已结束，系统正式在用</li>
       <li>Neolink 以 <code>mqtt-rtsp</code> 模式运行：RTSP 画面流 + MQTT 事件同时开</li>
     </ul>
   </section>
@@ -67,9 +93,9 @@
   <section>
     <h2>🖐️ 布防 / 撤防</h2>
     <ul>
-      <li>只有两条触发路，没有自动布防/撤防：① 按键：Cmd+Option+Ctrl+L+K = 布防，Cmd+Option+Ctrl+D+L = 撤防；② 聊天：在聊天里说「离开」= 布防，说「到了」= 撤防</li>
+      <li>布防 / 撤防：聊天里说「离开」= 布防，说「到了」= 撤防，没有自动布防/撤防</li>
       <li>布防回执：「已布防，链路正常」；撤防时发晨间小结（布防时长 / 触发次数 / 录像与上传状态）</li>
-      <li>兜底：没有 05:00 自动撤防，布防一直到他按键或说「到了」撤防为止；每天约 05:10 自动发昨夜小结</li>
+      <li>兜底：没有 05:00 自动撤防，布防一直到说「到了」撤防为止；每天约 05:10 自动发昨夜小结</li>
       <li>布防状态存文件，Mac 重启后自动续上，不会假装还在防</li>
       <li>布防完实查三样（2026-10-25 定）：Neolink 在跑、RTSP 能通、检测器没有一秒一重启，都过才算真布防；只看 armed: true 不算数</li>
       <li>合规：店内有雇员时段不布防，监控只覆盖下班后无人时段</li>
@@ -127,7 +153,7 @@
     <h2>📝 待办</h2>
     <ul>
       <li>修好 Neolink 自动重启：launchd 服务 <code>com.umami.neolink</code> 起不来（exit 78），目前手动 nohup 跑着；二进制已移到 <code>~/Documents/neolink/bin/neolink</code></li>
-      <li>二期设想「进出店自动布防/撤防」已完成（2026-10-26 WiFi 方案上线）；识别店主本人暂缓（E1 Pro 无人脸识别，软件比对在俯拍光线下不可靠）</li>
+      <li>识别店主本人暂缓（E1 Pro 无人脸识别，软件比对在俯拍光线下不可靠）</li>
     </ul>
   </section>
 </main>

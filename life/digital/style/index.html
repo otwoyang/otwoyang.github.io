@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>我喜欢的风格设计 · 数字世界地图</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; background: #f5f5f5; color: #333; }
+  header { background: #2c3e50; color: white; padding: 20px; }
+  header a { color: #7fb3d5; text-decoration: none; font-size: 14px; }
+  header h1 { font-size: 24px; margin: 8px 0 4px; }
+  header p { opacity: 0.8; font-size: 14px; }
+  main { max-width: 800px; margin: 20px auto; padding: 0 16px 40px; }
+  section { background: white; border-radius: 8px; padding: 20px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+  h2 { font-size: 18px; margin-bottom: 12px; color: #2c3e50; }
+  li { line-height: 1.8; margin-left: 20px; }
+  code { background: #f0f0f0; padding: 2px 6px; border-radius: 4px; font-size: 13px; }
+  .key { background: #f7f9fb; border-left: 4px solid #2c3e50; padding: 10px 14px; line-height: 1.8; }
+</style>
+
+<style>
+  /* 我喜欢的风格设计 · 全站统一样式（2026-11-02）：只换样式，不改内容与功能 */
+  body { background: #050505 !important; background-image: repeating-conic-gradient(#171717 0% 25%, #050505 0% 50%) !important; background-size: 24px 24px !important; color: #fff !important; }
+  header { background: #050505 !important; border-bottom: 6px solid #20FF2F !important; color: #fff !important; }
+  header a { color: #20FF2F !important; }
+  header h1, header p { color: #fff !important; }
+  main, .page { background: transparent !important; }
+  section, .group, #setup { background: #050505 !important; border: 3px solid #20FF2F !important; border-radius: 2px !important; box-shadow: none !important; color: #fff !important; }
+  h1, h2 { color: #20FF2F !important; }
+  h2 { border-bottom: 2px solid #248C22 !important; padding-bottom: 6px !important; }
+  a { color: #20FF2F !important; }
+  code { background: #171717 !important; border: 1px solid #248C22 !important; color: #fff !important; }
+  table, th, td { border-color: #248C22 !important; color: #fff !important; }
+  th { background: #171717 !important; }
+  .key { background: #171717 !important; border-left: 4px solid #20FF2F !important; color: #fff !important; }
+  .warn { background: #171717 !important; border-left: 4px solid #20FF2F !important; color: #fff !important; }
+  .status-ok { color: #20FF2F !important; }
+  .legend, .rowlabel { color: #aaa !important; }
+  .legend b.done { color: #20FF2F !important; }
+  .btn.done, .chip.sel { background: #248C22 !important; color: #fff !important; }
+  .btn.todo { background: #171717 !important; color: #888 !important; }
+  .chip { background: #171717 !important; color: #fff !important; border: 1px solid #248C22 !important; }
+  #echo { background: #171717 !important; border: 1px solid #248C22 !important; }
+  .order { border: 3px solid #248C22 !important; }
+</style>
+</head>
+<body>
+<header>
+  <a href="/">← 返回数字世界地图</a>
+  <h1>🎨 我喜欢的风格设计</h1>
+  <p>Life / Digital / Style —— 以后设计的网站都要参考这个方案（2026-11-02 用户亲口定）</p>
+</header>
+<main>
+  <section>
+    <p class="key">定版：布局用大图标网格，风格用 RetroArch RGUI 的绿框、棋盘格黑底和像素字体。完整数值版在《我喜欢的风格设计》PDF（7 页）里，改数值先改那份文档再改实现。</p>
+  </section>
+  <section>
+    <h2>风格构成</h2>
+    <ul>
+      <li>黑底棋盘格、亮绿粗框、像素图标、像素字体，四件事缺一不可</li>
+      <li>布局：4 列 × 3 行大图标，一屏 12 个入口，方向键上下 + A 确认 + B 返回</li>
+      <li>选中：整块变绿，不只变字色；其他图标白字白图标</li>
+      <li>底部页签：HOME / APPS / SETTINGS，当前页签变绿</li>
+    </ul>
+  </section>
+  <section>
+    <h2>颜色</h2>
+    <ul>
+      <li>签名绿 <code>#20FF2F</code>、选中绿 <code>#248C22</code></li>
+      <li>棋盘黑 <code>#050505</code>、棋盘灰 <code>#171717</code>、正文白、次级灰、页签底</li>
+      <li>配比：黑 70% / 白 20% / 绿 10%；功能红黄只准用于状态</li>
+    </ul>
+  </section>
+  <section>
+    <h2>文字与尺寸</h2>
+    <ul>
+      <li>英文像素字全大写、中文粗体、正文黑体、数字等宽；主标题 40px 到说明文字 13px，最小 12px</li>
+      <li>4px 基准网格；外框 6px、组件框 3px、分隔线 2px、圆角 0–2px；棋盘格 24px；图标 96px（小屏 64px）、图标格 176px；内容最大宽 1200px</li>
+      <li>网站断点：≥1024 四列、640–1023 三列、&lt;640 两到三列</li>
+    </ul>
+  </section>
+  <section>
+    <h2>以后怎么用</h2>
+    <ul>
+      <li>新网站、新页面先套这套颜色、字体、边框和图标格，不另起一套风格</li>
+      <li>中屏（PocketTerm35）是这套风格的第一个落地：大图标 + RGUI 风格，见中屏方案 PDF</li>
+    </ul>
+  </section>
+</main>
+</body>
+</html>
