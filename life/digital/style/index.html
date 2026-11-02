@@ -22,6 +22,8 @@
   th, td { border: 1px solid #248C22; padding: 6px 10px; text-align: left; font-size: 13.5px; line-height: 1.6; color: #fff; }
   th { background: #171717; color: #20FF2F; }
   .key { background: #171717; border-left: 4px solid #20FF2F; padding: 10px 14px; line-height: 1.8; }
+  img { max-width: 100%; height: auto; border: 3px solid #20FF2F; image-rendering: pixelated; display: block; margin: 12px 0; }
+  figcaption { font-size: 13px; color: #B8B8B8; line-height: 1.6; margin-bottom: 8px; }
   a { color: #20FF2F; }
 </style>
 </head>
@@ -35,7 +37,10 @@
   <section>
     <h2>定版</h2>
     <p class="key">一句话定义：图标网格的布局，像素图标、像素字体，选中的地方整块变绿。布局用大图标网格，风格用 RetroArch RGUI 的绿框、棋盘格黑底和像素字体。以后做任何界面，先拿这张图对照。</p>
-    <p style="margin-top:10px">定版标准样图：顶部绿字标题 MAIN MENU，4 列 × 3 行共 12 个像素图标（WEB BROWSER、FILE MANAGER、TERMINAL、MEDIA PLAYER、RETRO GAMES、CODE EDITOR、PYTHON、GPIO TOOLS、SYSTEM SETTINGS、VNC SERVER、ARDUINO、PI MONITOR），选中的 WEB BROWSER 整块变绿，底部 HOME / APPS / SETTINGS 三页签，当前页签 APPS 变绿。</p>
+    <figure>
+      <img src="combined-pixel.jpg" alt="定版标准样图：4×3 像素图标网格，RGUI 风格">
+      <figcaption>定版标准样图：顶部绿字标题 MAIN MENU，4 列 × 3 行共 12 个像素图标（WEB BROWSER、FILE MANAGER、TERMINAL、MEDIA PLAYER、RETRO GAMES、CODE EDITOR、PYTHON、GPIO TOOLS、SYSTEM SETTINGS、VNC SERVER、ARDUINO、PI MONITOR），选中的 WEB BROWSER 整块变绿，底部 HOME / APPS / SETTINGS 三页签，当前页签 APPS 变绿。</figcaption>
+    </figure>
     <p style="margin-top:10px">本页就是完整版，不依赖 PDF。改本方案里的任何数值，先改本页，再改实现，不许只改实现不改文档。</p>
   </section>
   <section>
@@ -54,7 +59,10 @@
       <li>不是纯文字列表：RGUI 的列表只作风格来源，正式界面永远用图标网格做入口</li>
       <li>不是照片风：界面里不放写实照片当背景，图就是像素图标本身</li>
     </ul>
-    <p style="margin-top:10px">风格来源：RetroArch 的 RGUI 菜单（绿字黑底、棋盘格、绿框、选中行变绿带 &gt; 标记）。本方案只取它的颜色、边框和像素字，布局不用它的文字列表，改用图标网格。</p>
+    <figure>
+      <img src="rgui.jpg" alt="风格来源：RetroArch RGUI 菜单">
+      <figcaption>风格来源：RetroArch 的 RGUI 菜单（绿字黑底、棋盘格、绿框、选中行变绿带 &gt; 标记）。本方案只取它的颜色、边框和像素字，布局不用它的文字列表，改用图标网格。</figcaption>
+    </figure>
   </section>
   <section>
     <h2>颜色规范：只用绿、黑、白</h2>
