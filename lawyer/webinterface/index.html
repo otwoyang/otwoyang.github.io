@@ -33,32 +33,30 @@
 <p class="sub">现在用的网页版。能自己运行的直接出结果，要 AI 操作的生成文字、复制到剪贴板、粘贴给 AI。数据来自 <a href="../lawyer.json">lawyer.json</a>，改 JSON 网页就跟着改。项目介绍在 <a href="../intro/">/lawyer/intro/</a>。</p>
 <div class="tabs">
   <button class="tab on" data-p="caipu">菜谱</button>
-  <button class="tab on" data-p="bufang">布防</button>
+  <button class="tab" data-p="bufang">布防</button>
   <button class="tab" data-p="chakuaidi">查快递</button>
   <button class="tab" data-p="gongjiao">公交车</button>
 </div>
 
 <div class="panel on" id="p-caipu">
-  <h2>菜谱</h2>
-  <p class="small" id="caipu-rule"></p>
   <h3>主材</h3><div class="btns" id="meat"></div>
   <h3>蔬菜 1</h3><div class="btns" id="veg1"></div>
   <h3>蔬菜 2（可不选）</h3><div class="btns" id="veg2"></div>
   <button class="primary" onclick="genCaipu()">生成文字</button>
-  <button class="primary" onclick="copyOut('caipu-out')">复制到剪贴板</button>
   <pre id="caipu-out">先选主材和蔬菜，再点生成文字。</pre>
+  <button onclick="copyOut('caipu-out')">复制到剪贴板</button>
+  <p class="note" id="caipu-rule"></p>
   <p class="note">菜谱要 AI 选底菜、做 DIY，所以网页只生成文字，复制粘贴给 Muse 或豆包，AI 给出食材和酱料分开的总结。机器推的还是云菜谱原版原样，不再问推原版还是聊天版。</p>
 </div>
 
-<div class="panel on" id="p-bufang" style="display:block">
-  <h2>布防</h2>
-  <p class="note">布防和撤防要在店里 Mac 上执行，网页本身不直接布防，只生成文字，复制给 Muse 执行。</p>
-  <div class="btns" style="margin-top:12px">
+<div class="panel" id="p-bufang">
+  <div class="btns">
     <button class="primary" onclick="genBufang('bufang')">布防</button>
     <button class="primary" onclick="genBufang('chefang')">撤防</button>
-    <button class="primary" onclick="copyOut('bufang-out')">复制到剪贴板</button>
   </div>
   <pre id="bufang-out">点布防或撤防，生成文字。</pre>
+  <button onclick="copyOut('bufang-out')">复制到剪贴板</button>
+  <p class="note">布防和撤防要在店里 Mac 上执行，网页本身不直接布防，只生成文字，复制给 Muse 执行。</p>
 </div>
 
 <div class="panel" id="p-chakuaidi">
@@ -75,17 +73,20 @@
 </div>
 
 <div class="panel" id="p-gongjiao">
-  <h2>公交车 · 去上班（1路）</h2>
-  <p class="small">Koskipuisto A（0807），往 Lentävänniemi，报最近 3 趟，格式：HH:MM 有一趟 1 路车，还有 X 分钟。</p>
+  <h2>公交车</h2>
+  <h3>出发地</h3><div class="btns" id="bus-from"></div>
+  <h3>目的地</h3><div class="btns" id="bus-to"></div>
   <h3>公交密钥（只存在这台浏览器里，不进 GitHub）</h3>
   <input id="bus-key" type="password" placeholder="Digitransit 密钥，第一次用时填一次">
   <button onclick="saveBusKey()">保存密钥到这台浏览器</button>
   <button onclick="clearBusKey()">清除密钥</button>
   <div class="btns" style="margin-top:12px">
-    <button class="primary" onclick="queryBus()">直接查去上班</button>
+    <button class="primary" onclick="queryBusRoute()">直接查这条路</button>
+    <button class="primary" onclick="queryBusWork()">去上班（1路）</button>
     <button class="primary" onclick="copyBusText()">复制查询文字给 Muse</button>
   </div>
-  <div id="bus-out" class="out">没密钥时先填密钥，或点复制查询文字给 Muse 查。</div>
+  <div id="bus-out" class="out">先选出发地和目的地，再点直接查。没密钥时先填密钥，或点复制查询文字给 Muse 查。</div>
+  <p class="note">常用地点就是 Map bus 页那 10 个，先选出发地，再选目的地，从/到两行首位都是店。去上班是快捷项：家→店只坐电车 1 路。</p>
   <p class="note">密钥不放在 lawyer.json 里，也不放在 GitHub 上。如果直接查被限流（403）或没密钥，就走复制给 Muse 查，Muse 那边有自己的 Digitransit 通道。</p>
 </div>
 
@@ -125,7 +126,26 @@ function parseBusData(data, nowMs){
   for(var k=0;k<out.length;k++){ var key=out[k].time+'-'+out[k].route; if(!seen[key]){seen[key]=1;uniq.push(out[k]);} }
   return uniq.slice(0,3);
 }
-var DATA=null, selMeat=null, selVeg1=null, selVeg2=null;
+function parseBusRoutes(data, nowMs){
+  var its=(data && data.data && data.data.plan && data.data.plan.itineraries) ? data.data.plan.itineraries : [];
+  var out=[];
+  for(var i=0;i<its.length;i++){
+    var legs=its[i].legs||[];
+    var parts=[];
+    for(var j=0;j<legs.length;j++){
+      var leg=legs[j];
+      if(leg.mode==='WALK'){
+        if(leg.duration && leg.duration>120) parts.push('步行 '+Math.round(leg.duration/60)+' 分钟');
+        else parts.push('步行');
+      } else if(leg.route && leg.route.shortName){
+        parts.push(formatClock(leg.startTime)+' '+leg.route.shortName+'路 '+(leg.from?leg.from.name:'')+' → '+(leg.to?leg.to.name:''));
+      }
+    }
+    if(parts.length) out.push({total:its[i].duration?Math.round(its[i].duration/60):0, text:parts.join(' + ')});
+  }
+  return out;
+}
+var DATA=null, selMeat=null, selVeg1=null, selVeg2=null, selFrom=null, selTo=null;
 function el(id){return document.getElementById(id);}
 function showPanel(name){
   var panels=document.querySelectorAll('.panel');
@@ -225,20 +245,49 @@ function saveBusKey(){
   localStorage.setItem('lawyer_digitransit_key', k); alert('密钥已保存到这台浏览器，不会传到 GitHub。');
 }
 function clearBusKey(){ localStorage.removeItem('lawyer_digitransit_key'); el('bus-key').value=''; alert('已清除'); }
-function copyBusText(){
-  copyText('项目：公交车\n查询：去上班，1 路，Koskipuisto A（0807）站，往 Lentävänniemi 方向\n请报最近 3 趟，格式：HH:MM 有一趟 1 路车，还有 X 分钟。');
+function busPlace(name){
+  var p=DATA.projects.find(function(x){return x.id==='gongjiao';});
+  var places=p.bus.places||[];
+  for(var i=0;i<places.length;i++) if(places[i].name===name) return places[i];
+  return null;
 }
-function queryBus(){
+function copyBusText(){
+  var from=selFrom||'家', to=selTo||'店';
+  if(from==='家' && to==='店'){
+    copyText('项目：公交车\n查询：去上班，1 路，Koskipuisto A（0807）站，往 Lentävänniemi 方向\n请报最近 3 趟，格式：HH:MM 有一趟 1 路车，还有 X 分钟。');
+  } else {
+    copyText('项目：公交车\n出发地：'+from+'\n目的地：'+to+'\n请直接查公交路线并告诉我结果，不要只给我代码。');
+  }
+}
+function queryBusWork(){
   var key=localStorage.getItem('lawyer_digitransit_key')||'';
   var out=el('bus-out');
   if(!key){ out.textContent='没设密钥，直接查不了。请先在上面填密钥，或点复制查询文字给 Muse 查。'; return; }
-  out.textContent='正在直接查…';
-  var query='{plan(from:{lat:61.497563,lon:23.76914},to:{lat:61.4977,lon:23.7608},numItineraries:3,transportModes:[{mode:TRAM}]){itineraries{duration legs{mode startTime from{name stop{code}} to{name} route{shortName} trip{tripHeadsign}}}}}';
+  out.textContent='正在直接查去上班（1路）…';
+  var query='{plan(from:{lat:61.497563,lon:23.76914},to:{lat:61.4977,lon:23.7608},numItineraries:3,transportModes:[{mode:TRAM}]){itineraries{duration legs{mode startTime duration from{name stop{code}} to{name} route{shortName} trip{tripHeadsign}}}}}';
   fetch('https://api.digitransit.fi/routing/v2/waltti/gtfs/v1', {method:'POST', headers:{'Content-Type':'application/json','digitransit-subscription-key':key}, body:JSON.stringify({query:query})}).then(function(r){ return r.json(); }).then(function(d){
     if(d.errors){ out.textContent='直接查返回错误：'+JSON.stringify(d.errors)+'。请走复制给 Muse 查。'; return; }
     var rows=parseBusData(d, Date.now());
     if(!rows.length){ out.textContent='直接查到了，但没有未来 3 趟电车腿（可能是纯步行方案，或班次已过）。请走复制给 Muse 查，或换个时间再查。'; return; }
     out.innerHTML=rows.map(function(r){ return r.time+' 有一趟 '+r.route+' 路车，还有 '+r.mins+' 分钟（'+r.from+' → '+r.to+(r.headsign?'，往 '+r.headsign:'')+'）'; }).join('<br>');
+  }).catch(function(e){
+    out.textContent='直接查失败：'+e.message+'。请走复制给 Muse 查。';
+  });
+}
+function queryBusRoute(){
+  if(!selFrom || !selTo){ alert('先选出发地和目的地'); return; }
+  var from=busPlace(selFrom), to=busPlace(selTo);
+  if(!from || !to){ alert('地点不在常用地点里'); return; }
+  var key=localStorage.getItem('lawyer_digitransit_key')||'';
+  var out=el('bus-out');
+  if(!key){ out.textContent='没设密钥，直接查不了。请先在上面填密钥，或点复制查询文字给 Muse 查。'; return; }
+  out.textContent='正在直接查 '+selFrom+' → '+selTo+'…';
+  var query='{plan(from:{lat:'+from.lat+',lon:'+from.lon+'},to:{lat:'+to.lat+',lon:'+to.lon+'},numItineraries:3,transportModes:[{mode:BUS},{mode:TRAM}]){itineraries{duration legs{mode startTime duration from{name stop{code}} to{name} route{shortName} trip{tripHeadsign}}}}}';
+  fetch('https://api.digitransit.fi/routing/v2/waltti/gtfs/v1', {method:'POST', headers:{'Content-Type':'application/json','digitransit-subscription-key':key}, body:JSON.stringify({query:query})}).then(function(r){ return r.json(); }).then(function(d){
+    if(d.errors){ out.textContent='直接查返回错误：'+JSON.stringify(d.errors)+'。请走复制给 Muse 查。'; return; }
+    var rows=parseBusRoutes(d, Date.now());
+    if(!rows.length){ out.textContent='直接查到了，但没有可坐车的方案（可能只有步行）。请走复制给 Muse 查。'; return; }
+    out.innerHTML=rows.map(function(r){ return r.text+'（共 '+r.total+' 分钟）'; }).join('<br><br>');
   }).catch(function(e){
     out.textContent='直接查失败：'+e.message+'。请走复制给 Muse 查。';
   });
@@ -252,6 +301,10 @@ fetch('../lawyer.json').then(function(r){ return r.json(); }).then(function(d){
   var veg2=[{label:'不需要第二个'}].concat(p.level2_vegetable);
   selBtns('veg2', veg2, function(v){ selVeg2=v; });
   renderParcels();
+  var bp=DATA.projects.find(function(x){return x.id==='gongjiao';});
+  var places=(bp.bus.places||[]).map(function(pl){ return {label:pl.name}; });
+  selBtns('bus-from', places, function(v){ selFrom=v; });
+  selBtns('bus-to', places, function(v){ selTo=v; });
   var saved=localStorage.getItem('lawyer_digitransit_key')||'';
   if(saved) el('bus-key').value='已保存（不显示）';
 }).catch(function(e){

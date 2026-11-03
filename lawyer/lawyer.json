@@ -1,1 +1,228 @@
-{"data_url":"https://otwoyang.github.io/lawyer/lawyer.json","description":"在用户和 AI 之间把关的文本生成器：像个人律师一样，先按固定规则把要求梳理成一段 AI 能完美理解、不出错的文本，再发给 AI 执行。网页是一个壳，菜单项目和规则都放在这个文件里，改后台数据，网页壳跟着改。","how_it_works":["打开网页版 /lawyer/webinterface/，一级选 project，二级点选选项，不用打字","能自己运行的自己运行，直接出结果：查快递、公交车","复杂的、要 AI 操作的生成一段文本，复制到剪贴板，粘贴给 AI 执行：菜谱、布防","数据库可以增加、删除快递，查询内容可以更新"],"intro_url":"https://otwoyang.github.io/lawyer/intro/","later_projects":[{"id":"shuimianfenxi","name":"睡眠分析"},{"id":"xieriji","name":"写日记"},{"id":"lukuangzhaopian","name":"路况照片"}],"name":"Lawyer","project":"lawyer","projects":[{"id":"caipu","level2_meat":[{"id":"zhurou","label":"猪肉"},{"id":"niurou","label":"牛肉"},{"id":"jirou","label":"鸡肉"}],"level2_vegetable":[{"id":"tudou","label":"土豆"},{"id":"baicai","label":"白菜"},{"id":"qincai","label":"芹菜"},{"id":"baocai","label":"包菜"},{"id":"yangcong","label":"洋葱"},{"id":"xihongshi","label":"西红柿"}],"max_vegetables":2,"mode":"clipboard","name":"菜谱","output_format":"形成一段文字的菜谱总结，食材是一个部分，酱料是一个部分，方便一次性准备好；食材部分含主材和蔬菜，酱料部分单独列出。","push":"菜谱通过小 C 机器的方法推送，推上去后机器屏幕显示菜谱，用户按开始即可；按原菜谱推送即可。","rule":"按 Map DIY 菜谱页的规则：聊天里给的是按手头食材改过的 DIY 版，机器推的是云菜谱原版原样，机器菜谱本身没法 DIY，不再问推原版还是聊天版。以主材为主，主材才是关键，其他只是手头可换的料，不是必须全含的筛选条件；蔬菜可以替换原菜谱中的蔬菜，所以原菜谱中不一定本来就是所选蔬菜。食材能替换，按手头有的来；加一种新食材只把时间加一点、调料加一点，绝不全部翻倍；同一种食材加量才按比例翻倍。调料一碗，所有调料提前放进一个碗，整碗倒进去；可数食材（辣椒、大蒜、葱）按个数，不给克数；称重的调料用克。备 2 份，炒一份，冰箱留一份。推菜时间是定死的，需要加长时告诉用户改哪一步、从几分钟改到几分钟，由用户在机器上手动改。土豆必须炖透，炒不行。"},{"id":"bufang","level2":[{"id":"bufang","label":"布防"},{"id":"chefang","label":"撤防"}],"mode":"clipboard","name":"布防","rule":"布防和撤防都要 AI 在店里 Mac 上执行，网页本身不直接布防，只生成文字，复制给 AI 执行。","rule_bufang":"我离开店了，请执行布防。布防 = 状态改成已布防 + 关 Mac 显示器 + 开始录像，并实查三样：Neolink 在跑、RTSP 能通、检测器没一秒一重启，都过才算真布防。","rule_chefang":"我到店了，请执行撤防。撤防要实查确实改了状态，撤防不自动点亮 Mac 显示器。"},{"id":"chakuaidi","mode":"direct_or_clipboard","name":"查快递","operations":["add","delete","update"],"parcels":[{"carrier":"淘宝国际运输 / UPS","contact":"阿伟（A0阿伟 张）","contents":"卡航敏感货一箱，收费重 25kg","expected":"2026 年 11 月底到芬兰","freight":"¥850 已付（25×34）","id":"taobao-1zw1008y6817480276","label":"淘宝国际运输","last_update":"2026-11-03 18:33","query_interface":"http://47.103.28.217/public/v1/ordeSearch/trackInfoList?number=1ZW1008Y6817480276","query_method":"GET，返回 JSON，rows[0].lastTrackInfo 就是最新一条动态，rows[0].trackEventsList 是时间倒序的物流动态。注意是 http 不是 https，网页是 https 时浏览器会拦 http 直接查，拦了就走复制给 AI。","status":"IN_TRANSIT，2026-11-03 18:33 坦佩雷，Reschedule Delivery Requested，包裹被暂存等待未来派送日期，未派送","tracking_number":"1ZW1008Y6817480276"}],"rule":"查快递：先在数据库里找快递单号和查询接口，能直接查就直接出结果；快递提供方千奇百怪，直接查不成就复制查询文字给 AI 查。数据库可以增加、删除快递，查询内容可以更新。"},{"bus":{"api":"https://api.digitransit.fi/routing/v2/waltti/gtfs/v1","api_key_note":"密钥不放在这个 JSON 里，不放在 GitHub 上，只存在用户自己浏览器的 localStorage 里，第一次用时在网页里填一次。","home":{"lat":61.497563,"lon":23.76914,"name":"家"},"route":"1","shop":{"lat":61.4977,"lon":23.7608,"name":"店"},"stop":{"code":"0807","direction":"Lentävänniemi","name":"Koskipuisto A"}},"id":"gongjiao","level2":[{"id":"qushangban","label":"去上班（1路）"}],"mode":"direct_or_clipboard","name":"公交车","rule":"公交车查询：去上班 = 1 路，Koskipuisto A（0807）站，往 Lentävänniemi 方向，报最近 3 趟，格式：HH:MM 有一趟 1 路车，还有 X 分钟。能直接查就直接出结果，密钥没设或直接查不成就复制查询文字给 AI 查。"}],"shells":[{"form":"网页","note":"现在用的壳，打开就是四个按钮，能自己运行的直接出结果，要 AI 操作的生成文字复制到剪贴板","platform":"Web","trigger":"打开 /lawyer/webinterface/，或手机主屏幕图标、动作按钮打开这个网址","url":"https://otwoyang.github.io/lawyer/webinterface/"},{"form":"快捷指令","note":"旧壳，2026-11-03 晚已停用，改走网页版，不再维护","platform":"iOS","trigger":"已停用"}],"version":"2026-11-03","webinterface_url":"https://otwoyang.github.io/lawyer/webinterface/"}
+{
+  "data_url": "https://otwoyang.github.io/lawyer/lawyer.json",
+  "description": "在用户和 AI 之间把关的文本生成器：像个人律师一样，先按固定规则把要求梳理成一段 AI 能完美理解、不出错的文本，再发给 AI 执行。网页是一个壳，菜单项目和规则都放在这个文件里，改后台数据，网页壳跟着改。",
+  "how_it_works": [
+    "打开网页版 /lawyer/webinterface/，一级选 project，二级点选选项，不用打字",
+    "能自己运行的自己运行，直接出结果：查快递、公交车",
+    "复杂的、要 AI 操作的生成一段文本，复制到剪贴板，粘贴给 AI 执行：菜谱、布防",
+    "数据库可以增加、删除快递，查询内容可以更新"
+  ],
+  "intro_url": "https://otwoyang.github.io/lawyer/intro/",
+  "later_projects": [
+    {
+      "id": "shuimianfenxi",
+      "name": "睡眠分析"
+    },
+    {
+      "id": "xieriji",
+      "name": "写日记"
+    },
+    {
+      "id": "lukuangzhaopian",
+      "name": "路况照片"
+    }
+  ],
+  "name": "Lawyer",
+  "project": "lawyer",
+  "projects": [
+    {
+      "id": "caipu",
+      "level2_meat": [
+        {
+          "id": "zhurou",
+          "label": "猪肉"
+        },
+        {
+          "id": "niurou",
+          "label": "牛肉"
+        },
+        {
+          "id": "jirou",
+          "label": "鸡肉"
+        }
+      ],
+      "level2_vegetable": [
+        {
+          "id": "tudou",
+          "label": "土豆"
+        },
+        {
+          "id": "baicai",
+          "label": "白菜"
+        },
+        {
+          "id": "qincai",
+          "label": "芹菜"
+        },
+        {
+          "id": "baocai",
+          "label": "包菜"
+        },
+        {
+          "id": "yangcong",
+          "label": "洋葱"
+        },
+        {
+          "id": "xihongshi",
+          "label": "西红柿"
+        }
+      ],
+      "max_vegetables": 2,
+      "mode": "clipboard",
+      "name": "菜谱",
+      "output_format": "形成一段文字的菜谱总结，食材是一个部分，酱料是一个部分，方便一次性准备好；食材部分含主材和蔬菜，酱料部分单独列出。",
+      "push": "菜谱通过小 C 机器的方法推送，推上去后机器屏幕显示菜谱，用户按开始即可；按原菜谱推送即可。",
+      "rule": "按 Map DIY 菜谱页的规则：聊天里给的是按手头食材改过的 DIY 版，机器推的是云菜谱原版原样，机器菜谱本身没法 DIY，不再问推原版还是聊天版。以主材为主，主材才是关键，其他只是手头可换的料，不是必须全含的筛选条件；蔬菜可以替换原菜谱中的蔬菜，所以原菜谱中不一定本来就是所选蔬菜。食材能替换，按手头有的来；加一种新食材只把时间加一点、调料加一点，绝不全部翻倍；同一种食材加量才按比例翻倍。调料一碗，所有调料提前放进一个碗，整碗倒进去；可数食材（辣椒、大蒜、葱）按个数，不给克数；称重的调料用克。备 2 份，炒一份，冰箱留一份。推菜时间是定死的，需要加长时告诉用户改哪一步、从几分钟改到几分钟，由用户在机器上手动改。土豆必须炖透，炒不行。"
+    },
+    {
+      "id": "bufang",
+      "level2": [
+        {
+          "id": "bufang",
+          "label": "布防"
+        },
+        {
+          "id": "chefang",
+          "label": "撤防"
+        }
+      ],
+      "mode": "clipboard",
+      "name": "布防",
+      "rule": "布防和撤防都要 AI 在店里 Mac 上执行，网页本身不直接布防，只生成文字，复制给 AI 执行。",
+      "rule_bufang": "我离开店了，请执行布防。布防 = 状态改成已布防 + 关 Mac 显示器 + 开始录像，并实查三样：Neolink 在跑、RTSP 能通、检测器没一秒一重启，都过才算真布防。",
+      "rule_chefang": "我到店了，请执行撤防。撤防要实查确实改了状态，撤防不自动点亮 Mac 显示器。"
+    },
+    {
+      "id": "chakuaidi",
+      "mode": "direct_or_clipboard",
+      "name": "查快递",
+      "operations": [
+        "add",
+        "delete",
+        "update"
+      ],
+      "parcels": [
+        {
+          "carrier": "淘宝国际运输 / UPS",
+          "contact": "阿伟（A0阿伟 张）",
+          "contents": "卡航敏感货一箱，收费重 25kg",
+          "expected": "2026 年 11 月底到芬兰",
+          "freight": "¥850 已付（25×34）",
+          "id": "taobao-1zw1008y6817480276",
+          "label": "淘宝国际运输",
+          "last_update": "2026-11-03 18:33",
+          "query_interface": "http://47.103.28.217/public/v1/ordeSearch/trackInfoList?number=1ZW1008Y6817480276",
+          "query_method": "GET，返回 JSON，rows[0].lastTrackInfo 就是最新一条动态，rows[0].trackEventsList 是时间倒序的物流动态。注意是 http 不是 https，网页是 https 时浏览器会拦 http 直接查，拦了就走复制给 AI。",
+          "status": "IN_TRANSIT，2026-11-03 18:33 坦佩雷，Reschedule Delivery Requested，包裹被暂存等待未来派送日期，未派送",
+          "tracking_number": "1ZW1008Y6817480276"
+        }
+      ],
+      "rule": "查快递：先在数据库里找快递单号和查询接口，能直接查就直接出结果；快递提供方千奇百怪，直接查不成就复制查询文字给 AI 查。数据库可以增加、删除快递，查询内容可以更新。"
+    },
+    {
+      "bus": {
+        "api": "https://api.digitransit.fi/routing/v2/waltti/gtfs/v1",
+        "api_key_note": "密钥不放在这个 JSON 里，不放在 GitHub 上，只存在用户自己浏览器的 localStorage 里，第一次用时在网页里填一次。",
+        "home": {
+          "lat": 61.497563,
+          "lon": 23.76914,
+          "name": "家"
+        },
+        "route": "1",
+        "shop": {
+          "lat": 61.4977,
+          "lon": 23.7608,
+          "name": "店"
+        },
+        "stop": {
+          "code": "0807",
+          "direction": "Lentävänniemi",
+          "name": "Koskipuisto A"
+        },
+        "places": [
+          {
+            "name": "店",
+            "lat": 61.4977,
+            "lon": 23.7608
+          },
+          {
+            "name": "家",
+            "lat": 61.497563,
+            "lon": 23.76914
+          },
+          {
+            "name": "Noodle Lab",
+            "lat": 61.495882,
+            "lon": 23.804841
+          },
+          {
+            "name": "Biang",
+            "lat": 61.498308,
+            "lon": 23.770591
+          },
+          {
+            "name": "Prisma Kaleva",
+            "lat": 61.492007,
+            "lon": 23.82016
+          },
+          {
+            "name": "Bauhaus",
+            "lat": 61.465158,
+            "lon": 23.716355
+          },
+          {
+            "name": "Hervanta Duo",
+            "lat": 61.451276,
+            "lon": 23.850242
+          },
+          {
+            "name": "IKEA Tampere",
+            "lat": 61.453022,
+            "lon": 23.771785
+          },
+          {
+            "name": "Verkkokauppa Pirkkala",
+            "lat": 61.467504,
+            "lon": 23.720286
+          },
+          {
+            "name": "Kespro",
+            "lat": 61.480918,
+            "lon": 23.7957
+          }
+        ]
+      },
+      "id": "gongjiao",
+      "level2": [
+        {
+          "id": "qushangban",
+          "label": "去上班（1路）"
+        },
+        {
+          "id": "fromto",
+          "label": "选两次：出发地→目的地"
+        }
+      ],
+      "mode": "direct_or_clipboard",
+      "name": "公交车",
+      "rule": "公交车查询：先选出发地，再选目的地，都是 Map bus 页的 10 个常用地点，从/到两行首位都是店。能直接查就直接出结果，密钥没设或直接查不成就复制查询文字给 AI 查。去上班是快捷项：家→店，只坐电车 1 路，Koskipuisto A（0807）站，往 Lentävänniemi 方向，报最近 3 趟，格式：HH:MM 有一趟 1 路车，还有 X 分钟。"
+    }
+  ],
+  "shells": [
+    {
+      "form": "网页",
+      "note": "现在用的壳，打开就是四个按钮，能自己运行的直接出结果，要 AI 操作的生成文字复制到剪贴板",
+      "platform": "Web",
+      "trigger": "打开 /lawyer/webinterface/，或手机主屏幕图标、动作按钮打开这个网址",
+      "url": "https://otwoyang.github.io/lawyer/webinterface/"
+    },
+    {
+      "form": "快捷指令",
+      "note": "旧壳，2026-11-03 晚已停用，改走网页版，不再维护",
+      "platform": "iOS",
+      "trigger": "已停用"
+    }
+  ],
+  "version": "2026-11-03",
+  "webinterface_url": "https://otwoyang.github.io/lawyer/webinterface/"
+}
