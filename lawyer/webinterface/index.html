@@ -6,31 +6,27 @@
 <title>Lawyer · 网页版</title>
 <style>
   *{margin:0;padding:0;box-sizing:border-box}
-  body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;background:#050505;background-image:repeating-conic-gradient(#171717 0% 25%,#050505 0% 50%);background-size:24px 24px;color:#fff;padding:16px}
-  h1{font-size:26px;color:#20FF2F;margin:8px 0 4px}
-  .sub{color:#B8B8B8;font-size:13px;line-height:1.6;margin-bottom:16px}
-  .sub a{color:#20FF2F}
-  .tabs{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
-  .tab{background:#111;border:3px solid #248C22;color:#fff;font-size:18px;padding:16px 8px;cursor:pointer;border-radius:2px}
+  body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;background:#050505;background-image:repeating-conic-gradient(#171717 0% 25%,#050505 0% 50%);background-size:24px 24px;color:#fff;padding:8px}
+  .tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:8px}
+  .tab{background:#111;border:2px solid #248C22;color:#fff;font-size:15px;padding:9px 2px;cursor:pointer;border-radius:2px}
   .tab.on{background:#248C22;border-color:#20FF2F}
-  .panel{background:#050505;border:3px solid #20FF2F;padding:16px;border-radius:2px;display:none}
+  .panel{background:#050505;border:2px solid #20FF2F;padding:10px;border-radius:2px;display:none}
   .panel.on{display:block}
-  h2{font-size:20px;color:#20FF2F;margin-bottom:12px}
-  h3{font-size:16px;margin:16px 0 8px}
-  .btns{display:flex;flex-wrap:wrap;gap:8px}
-  button{background:#111;border:2px solid #248C22;color:#fff;font-size:16px;padding:10px 14px;cursor:pointer;border-radius:2px}
+  h3{font-size:13px;color:#B8B8B8;margin:7px 0 4px}
+  .btns{display:flex;flex-wrap:wrap;gap:6px}
+  button{background:#111;border:2px solid #248C22;color:#fff;font-size:14px;padding:6px 10px;cursor:pointer;border-radius:2px}
   button.on{background:#248C22;border-color:#20FF2F}
-  button.primary{background:#248C22;border-color:#20FF2F;font-size:18px;padding:12px 18px}
-  pre{white-space:pre-wrap;word-break:break-all;background:#171717;border:2px solid #248C22;padding:12px;margin-top:12px;font-size:14px;line-height:1.7}
-  .out{margin-top:12px;line-height:1.8}
-  input{width:100%;background:#171717;border:2px solid #248C22;color:#fff;padding:10px;font-size:15px;margin:6px 0}
-  .note{color:#B8B8B8;font-size:13px;line-height:1.7;margin-top:10px}
-  .small{font-size:13px;color:#B8B8B8}
+  button.primary{background:#248C22;border-color:#20FF2F;font-size:15px;padding:8px 12px}
+  pre{white-space:pre-wrap;word-break:break-all;background:#171717;border:2px solid #248C22;padding:8px;margin-top:8px;font-size:13px;line-height:1.5;max-height:28vh;overflow:auto}
+  .out{margin-top:8px;line-height:1.5;font-size:14px;max-height:28vh;overflow:auto}
+  input{width:100%;background:#171717;border:2px solid #248C22;color:#fff;padding:8px;font-size:14px;margin:6px 0}
+  .note{color:#B8B8B8;font-size:12px;line-height:1.6;margin-top:8px}
+  .small{font-size:12px;color:#B8B8B8}
+  details{margin-top:8px}
+  summary{color:#B8B8B8;font-size:13px;cursor:pointer}
 </style>
 </head>
 <body>
-<h1>Lawyer</h1>
-<p class="sub">现在用的网页版。能自己运行的直接出结果，要 AI 操作的生成文字、复制到剪贴板、粘贴给 AI。数据来自 <a href="../lawyer.json">lawyer.json</a>，改 JSON 网页就跟着改。项目介绍在 <a href="../intro/">/lawyer/intro/</a>。</p>
 <div class="tabs">
   <button class="tab on" data-p="caipu">菜谱</button>
   <button class="tab" data-p="bufang">布防</button>
@@ -45,8 +41,10 @@
   <button class="primary" onclick="genCaipu()">生成文字</button>
   <pre id="caipu-out">先选主材和蔬菜，再点生成文字。</pre>
   <button onclick="copyOut('caipu-out')">复制到剪贴板</button>
+  <details><summary>规则说明（不用每次看）</summary>
   <p class="note" id="caipu-rule"></p>
   <p class="note">菜谱要 AI 选底菜、做 DIY，所以网页只生成文字，复制粘贴给 Muse 或豆包，AI 给出食材和酱料分开的总结。机器推的还是云菜谱原版原样，不再问推原版还是聊天版。</p>
+  </details>
 </div>
 
 <div class="panel" id="p-bufang">
@@ -56,38 +54,42 @@
   </div>
   <pre id="bufang-out">点布防或撤防，生成文字。</pre>
   <button onclick="copyOut('bufang-out')">复制到剪贴板</button>
-  <p class="note">布防和撤防要在店里 Mac 上执行，网页本身不直接布防，只生成文字，复制给 Muse 执行。</p>
+  <details><summary>说明（不用每次看）</summary><p class="note">布防和撤防要在店里 Mac 上执行，网页本身不直接布防，只生成文字，复制给 Muse 执行。</p></details>
 </div>
 
 <div class="panel" id="p-chakuaidi">
   <h2>查快递</h2>
   <div id="parcel-list" class="out"></div>
-  <h3>增加快递（只存在这台浏览器里，要进共享数据库就把改动复制给 Muse）</h3>
+  <details><summary>增加快递（只存在这台浏览器里，要进共享数据库就把改动复制给 Muse）</summary>
   <input id="add-label" placeholder="名字，例如：淘宝国际运输">
   <input id="add-number" placeholder="单号">
   <input id="add-contents" placeholder="内容，例如：卡航敏感货一箱，25kg">
   <input id="add-interface" placeholder="查询接口（可空，空就按模板拼）">
   <button onclick="addParcel()">增加</button>
   <button onclick="copyLocalParcels()">把本地改动复制给 Muse 更新数据库</button>
-  <p class="note">直接查：网页是 https，快递接口是 http 时浏览器会拦，拦了就自动走复制给 Muse 查。快递提供方千奇百怪，直接查不成就走剪贴板，这是正常的。</p>
+  </details>
+  <details><summary>说明（不用每次看）</summary><p class="note">直接查：网页是 https，快递接口是 http 时浏览器会拦，拦了就自动走复制给 Muse 查。快递提供方千奇百怪，直接查不成就走剪贴板，这是正常的。</p></details>
 </div>
 
 <div class="panel" id="p-gongjiao">
   <h2>公交车</h2>
   <h3>出发地</h3><div class="btns" id="bus-from"></div>
   <h3>目的地</h3><div class="btns" id="bus-to"></div>
-  <h3>公交密钥（只存在这台浏览器里，不进 GitHub）</h3>
-  <input id="bus-key" type="password" placeholder="Digitransit 密钥，第一次用时填一次">
-  <button onclick="saveBusKey()">保存密钥到这台浏览器</button>
-  <button onclick="clearBusKey()">清除密钥</button>
   <div class="btns" style="margin-top:12px">
     <button class="primary" onclick="queryBusRoute()">直接查这条路</button>
     <button class="primary" onclick="queryBusWork()">去上班（1路）</button>
     <button class="primary" onclick="copyBusText()">复制查询文字给 Muse</button>
   </div>
   <div id="bus-out" class="out">先选出发地和目的地，再点直接查。没密钥时先填密钥，或点复制查询文字给 Muse 查。</div>
+  <details><summary>公交密钥（只设一次，只存在这台浏览器里，不进 GitHub）</summary>
+  <input id="bus-key" type="password" placeholder="Digitransit 密钥，第一次用时填一次">
+  <button onclick="saveBusKey()">保存密钥到这台浏览器</button>
+  <button onclick="clearBusKey()">清除密钥</button>
+  </details>
+  <details><summary>说明（不用每次看）</summary>
   <p class="note">常用地点就是 Map bus 页那 10 个，先选出发地，再选目的地，从/到两行首位都是店。去上班是快捷项：家→店只坐电车 1 路。</p>
   <p class="note">密钥不放在 lawyer.json 里，也不放在 GitHub 上。如果直接查被限流（403）或没密钥，就走复制给 Muse 查，Muse 那边有自己的 Digitransit 通道。</p>
+  </details>
 </div>
 
 <script>
