@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>UMAMI 网页播放器</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: #050505; color: #FFFFFF; font-family: sans-serif; }
+  body { max-width: 640px; margin: 0 auto; padding: 16px 16px 32px; }
+  h1 { font-size: 26px; line-height: 36px; font-weight: bold; margin: 8px 0 4px; }
+  h1 .mark { color: #20FF2F; }
+  .hint { color: #B8B8B8; font-size: 14px; line-height: 22px; margin: 8px 0 16px; }
+  .panel { background: #171717; padding: 16px; margin-bottom: 16px; }
+  .folder-name { color: #B8B8B8; font-size: 14px; line-height: 22px; word-break: break-all; margin-bottom: 16px; }
+  .folder-name b { color: #FFFFFF; }
+  button {
+    display: block; width: 100%; min-height: 56px;
+    background: #171717; color: #FFFFFF; border: 2px solid #20FF2F;
+    font-size: 20px; line-height: 28px; font-weight: bold;
+    border-radius: 0; cursor: pointer; margin-bottom: 12px;
+  }
+  button:active { background: #248C22; }
+  button.primary { background: #248C22; border-color: #248C22; }
+  .now { font-size: 18px; line-height: 28px; word-break: break-all; margin-bottom: 4px; }
+  .now .mark { color: #20FF2F; }
+  .time { color: #B8B8B8; font-size: 14px; line-height: 20px; margin-bottom: 8px; }
+  input[type="range"] { width: 100%; height: 32px; accent-color: #20FF2F; }
+  .row { display: flex; gap: 12px; margin-top: 12px; }
+  .row button { flex: 1; margin-bottom: 0; }
+  .vol-row { display: flex; align-items: center; gap: 12px; margin-top: 12px; }
+  .vol-row span { color: #B8B8B8; font-size: 16px; white-space: nowrap; }
+  .vol-row input { flex: 1; }
+  #playlist { list-style: none; }
+  #playlist li {
+    padding: 12px 8px; border-bottom: 1px solid #171717;
+    font-size: 16px; line-height: 24px; word-break: break-all; cursor: pointer;
+  }
+  #playlist li.current { color: #20FF2F; background: #171717; }
+  .empty { color: #B8B8B8; font-size: 16px; line-height: 24px; padding: 12px 8px; }
+</style>
+</head>
+<body>
+  <h1><span class="mark">&gt;</span> UMAMI 网页播放器</h1>
+  <p class="hint">第一次点「选择文件夹」，选手机里的 Music 文件夹（也可以直接选 Music 下面的 radio 文件夹）。</p>
+
+  <button id="pickBtn" class="primary" type="button">&gt; 选择文件夹</button>
+  <input type="file" id="folderInput" webkitdirectory multiple hidden>
+  <p class="folder-name" id="folderInfo">还没有选文件夹。</p>
+
+  <div class="panel">
+    <p class="now" id="nowPlaying"><span class="mark">&gt;</span> 未在播放</p>
+    <p class="time"><span id="curTime">00:00</span> / <span id="totTime">00:00</span></p>
+    <input type="range" id="seekBar" min="0" max="1000" value="0" aria-label="播放进度">
+    <div class="row">
+      <button id="prevBtn" type="button">上一首</button>
+      <button id="playBtn" type="button">播放</button>
+      <button id="nextBtn" type="button">下一首</button>
+    </div>
+    <div class="vol-row">
+      <span>音量</span>
+      <input type="range" id="volBar" min="0" max="100" value="100" aria-label="音量">
+    </div>
+  </div>
+
+  <div class="panel">
+    <ul id="playlist"><li class="empty">歌单是空的，先选文件夹。</li></ul>
+  </div>
+
+  <audio id="audio" preload="metadata"></audio>
+
+<script>
+(function () {
+  'use strict';
+  var AUDIO_EXTS = ['mp3', 'wav', 'm4a', 'flac', 'ogg', 'opus'];
+  var audio = document.getElementById('audio');
+  var folderInput = document.getElementById('folderInput');
+  var pickBtn = document.getElementById('pickBtn');
+  var playBtn = document.getElementById('playBtn');
+  var prevBtn = document.getElementById('prevBtn');
+  var nextBtn = document.getElementById('nextBtn');
+  var seekBar = document.getElementById('seekBar');
+  var volBar = document.getElementById('volBar');
+  var nowPlaying = document.getElementById('nowPlaying');
+  var curTimeEl = document.getElementById('curTime');
+  var totTimeEl = document.getElementById('totTime');
+  var folderInfo = document.getElementById('folderInfo');
+  var playlistEl = document.getElementById('playlist');
+
+  var tracks = [];   // {name, rel, url}
+  var current = -1;
+  var seeking = false;
+
+  function fmt(sec) {
+    if (!isFinite(sec) || sec < 0) sec = 0;
+    sec = Math.floor(sec);
+    var m = Math.floor(sec / 60);
+    var s = sec % 60;
+    return (m < 10 ? '0' + m : '' + m) + ':' + (s < 10 ? '0' + s : '' + s);
+  }
+
+  function escapeHtml(s) {
+    return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+
+  function isAudio(name) {
+    var dot = name.lastIndexOf('.');
+    if (dot < 0) return false;
+    return AUDIO_EXTS.indexOf(name.slice(dot + 1).toLowerCase()) >= 0;
+  }
+
+  function setMediaSession(track) {
+    if (!('mediaSession' in navigator)) return;
+    try {
+      navigator.mediaSession.metadata = new MediaMetadata({
+        title: track.name,
+        artist: track.rel,
+        album: 'UMAMI 网页播放器'
+      });
+    } catch (e) { /* 旧浏览器没有 MediaMetadata，跳过 */ }
+  }
+
+  function bindMediaSessionActions() {
+    if (!('mediaSession' in navigator)) return;
+    try {
+      navigator.mediaSession.setActionHandler('play', function () { playCurrent(); });
+      navigator.mediaSession.setActionHandler('pause', function () { pauseCurrent(); });
+      navigator.mediaSession.setActionHandler('previoustrack', function () { playPrev(); });
+      navigator.mediaSession.setActionHandler('nexttrack', function () { playNext(); });
+      navigator.mediaSession.setActionHandler('seekto', function (d) {
+        if (d && typeof d.seekTime === 'number') audio.currentTime = d.seekTime;
+      });
+    } catch (e) { /* 不支持的动作直接跳过 */ }
+  }
+
+  function renderPlaylist() {
+    playlistEl.innerHTML = '';
+    if (!tracks.length) {
+      var li0 = document.createElement('li');
+      li0.className = 'empty';
+      li0.textContent = '歌单是空的，先选文件夹。';
+      playlistEl.appendChild(li0);
+      return;
+    }
+    tracks.forEach(function (t, i) {
+      var li = document.createElement('li');
+      li.textContent = (i === current ? '> ' : '') + t.rel;
+      if (i === current) li.className = 'current';
+      li.addEventListener('click', function () { playIndex(i); });
+      playlistEl.appendChild(li);
+    });
+  }
+
+  function showCurrent() {
+    if (current < 0 || !tracks[current]) {
+      nowPlaying.innerHTML = '<span class="mark">&gt;</span> 未在播放';
+      return;
+    }
+    var t = tracks[current];
+    nowPlaying.innerHTML = '<span class="mark">&gt;</span> ' + escapeHtml(t.rel);
+    setMediaSession(t);
+    renderPlaylist();
+  }
+
+  function playIndex(i) {
+    if (i < 0 || i >= tracks.length) return;
+    current = i;
+    audio.src = tracks[i].url;
+    audio.play();
+    playBtn.textContent = '暂停';
+    showCurrent();
+  }
+
+  function playCurrent() {
+    if (!tracks.length) return;
+    if (current < 0) { playIndex(0); return; }
+    audio.play();
+    playBtn.textContent = '暂停';
+  }
+
+  function pauseCurrent() {
+    audio.pause();
+    playBtn.textContent = '播放';
+  }
+
+  function playNext() {
+    if (!tracks.length) return;
+    if (current < tracks.length - 1) playIndex(current + 1);
+  }
+
+  function playPrev() {
+    if (!tracks.length) return;
+    if (audio.currentTime > 3) { audio.currentTime = 0; return; }
+    if (current > 0) playIndex(current - 1);
+  }
+
+  pickBtn.addEventListener('click', function () { folderInput.click(); });
+
+  folderInput.addEventListener('change', function () {
+    var files = Array.prototype.slice.call(folderInput.files || []);
+    tracks.forEach(function (t) { URL.revokeObjectURL(t.url); });
+    tracks = [];
+    files.forEach(function (f) {
+      if (!isAudio(f.name)) return;
+      var rel = f.webkitRelativePath || f.name;
+      tracks.push({ name: f.name, rel: rel, url: URL.createObjectURL(f) });
+    });
+    tracks.sort(function (a, b) {
+      var x = a.rel.toLowerCase(), y = b.rel.toLowerCase();
+      return x < y ? -1 : (x > y ? 1 : 0);
+    });
+    current = -1;
+    if (!tracks.length) {
+      folderInfo.textContent = '这个文件夹里没有找到音频文件，请换一个文件夹。';
+      renderPlaylist();
+      return;
+    }
+    var top = tracks[0].rel.split('/')[0];
+    folderInfo.innerHTML = '文件夹：<b>' + escapeHtml(top) + '</b>，共 ' + tracks.length + ' 首。';
+    renderPlaylist();
+    playIndex(0); // 选文件夹这个手势本身就是用户操作，直接开始播第一首
+  });
+
+  playBtn.addEventListener('click', function () {
+    if (!tracks.length) return;
+    if (audio.paused) playCurrent(); else pauseCurrent();
+  });
+  prevBtn.addEventListener('click', playPrev);
+  nextBtn.addEventListener('click', playNext);
+
+  audio.addEventListener('ended', function () {
+    if (current < tracks.length - 1) playIndex(current + 1);
+    else { pauseCurrent(); audio.currentTime = 0; }
+  });
+  audio.addEventListener('play', function () { playBtn.textContent = '暂停'; });
+  audio.addEventListener('pause', function () { playBtn.textContent = '播放'; });
+  audio.addEventListener('loadedmetadata', function () {
+    totTimeEl.textContent = fmt(audio.duration);
+  });
+  audio.addEventListener('timeupdate', function () {
+    curTimeEl.textContent = fmt(audio.currentTime);
+    if (!seeking && audio.duration) {
+      seekBar.value = Math.round(audio.currentTime / audio.duration * 1000);
+    }
+  });
+  seekBar.addEventListener('input', function () {
+    seeking = true;
+    if (audio.duration) audio.currentTime = seekBar.value / 1000 * audio.duration;
+  });
+  seekBar.addEventListener('change', function () { seeking = false; });
+  volBar.addEventListener('input', function () {
+    audio.volume = volBar.value / 100;
+  });
+
+  bindMediaSessionActions();
+  renderPlaylist();
+})();
+</script>
+</body>
+</html>
