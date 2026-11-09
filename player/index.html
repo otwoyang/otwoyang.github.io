@@ -11,6 +11,7 @@
   h1 { font-size: 26px; line-height: 36px; font-weight: bold; margin: 8px 0 4px; }
   h1 .mark { color: #20FF2F; }
   .hint { color: #B8B8B8; font-size: 14px; line-height: 22px; margin: 8px 0 16px; }
+  .status { color: #20FF2F; font-size: 14px; line-height: 22px; margin: 8px 0 16px; word-break: break-all; }
   .panel { background: #171717; padding: 16px; margin-bottom: 16px; }
   .folder-name { color: #B8B8B8; font-size: 14px; line-height: 22px; word-break: break-all; margin-bottom: 16px; }
   .folder-name b { color: #FFFFFF; }
@@ -42,7 +43,15 @@
 </head>
 <body>
   <h1><span class="mark">&gt;</span> UMAMI 网页播放器</h1>
-  <p class="hint">第一次点「选择文件夹」，选手机里的 Music 文件夹（也可以直接选 Music 下面的 radio 文件夹）。</p>
+  <p class="hint" id="hint">第一次点下面选一次 Music 文件夹和 Radio 文件夹，选完就记住了；以后打开网址会自动播。</p>
+  <p class="status" id="autoStatus" hidden></p>
+
+  <div id="fsaBox" hidden>
+    <button id="pickMusicBtn" type="button">选择 Music 文件夹</button>
+    <button id="pickRadioBtn" type="button">选择 Radio 文件夹</button>
+    <p class="folder-name" id="storedInfo"></p>
+  </div>
+  <button id="authBtn" type="button" hidden>点一下授权并播放</button>
 
   <button id="pickBtn" class="primary" type="button">&gt; 选择文件夹</button>
   <input type="file" id="folderInput" webkitdirectory multiple hidden>
@@ -86,10 +95,18 @@
   var totTimeEl = document.getElementById('totTime');
   var folderInfo = document.getElementById('folderInfo');
   var playlistEl = document.getElementById('playlist');
+  var hintEl = document.getElementById('hint');
+  var autoStatusEl = document.getElementById('autoStatus');
+  var fsaBox = document.getElementById('fsaBox');
+  var pickMusicBtn = document.getElementById('pickMusicBtn');
+  var pickRadioBtn = document.getElementById('pickRadioBtn');
+  var storedInfo = document.getElementById('storedInfo');
+  var authBtn = document.getElementById('authBtn');
 
   var tracks = [];   // {name, rel, url}
   var current = -1;
   var seeking = false;
+  var pendingAuto = null; // {kind:'music'} 或 {kind:'radio', date:'YYYY-MM-DD'}，授权重试用
 
   function fmt(sec) {
     if (!isFinite(sec) || sec < 0) sec = 0;
@@ -107,6 +124,12 @@
     var dot = name.lastIndexOf('.');
     if (dot < 0) return false;
     return AUDIO_EXTS.indexOf(name.slice(dot + 1).toLowerCase()) >= 0;
+  }
+
+  function setAutoStatus(msg) {
+    if (!autoStatusEl) return;
+    autoStatusEl.hidden = false;
+    autoStatusEl.textContent = msg;
   }
 
   function setMediaSession(track) {
@@ -162,11 +185,24 @@
     renderPlaylist();
   }
 
+  // 播放：接住自动播放被浏览器拦住的情况（没有用户手势 / MEI 不够），
+  // 不抛未捕获的 Promise 拒绝，改显示提示让用户点一下“播放”。
+  function tryPlay() {
+    var p = null;
+    try { p = audio.play(); } catch (e) { p = null; }
+    if (p && typeof p.catch === 'function') {
+      p.catch(function () {
+        setAutoStatus('浏览器拦住了自动播放，点一下“播放”就开始。');
+        playBtn.textContent = '播放';
+      });
+    }
+  }
+
   function playIndex(i) {
     if (i < 0 || i >= tracks.length) return;
     current = i;
     audio.src = tracks[i].url;
-    audio.play();
+    tryPlay();
     playBtn.textContent = '暂停';
     showCurrent();
   }
@@ -174,7 +210,7 @@
   function playCurrent() {
     if (!tracks.length) return;
     if (current < 0) { playIndex(0); return; }
-    audio.play();
+    tryPlay();
     playBtn.textContent = '暂停';
   }
 
@@ -186,6 +222,7 @@
   function playNext() {
     if (!tracks.length) return;
     if (current < tracks.length - 1) playIndex(current + 1);
+    else playIndex(0); // 循环
   }
 
   function playPrev() {
@@ -229,8 +266,9 @@
   nextBtn.addEventListener('click', playNext);
 
   audio.addEventListener('ended', function () {
+    if (!tracks.length) return;
     if (current < tracks.length - 1) playIndex(current + 1);
-    else { pauseCurrent(); audio.currentTime = 0; }
+    else playIndex(0); // 播完循环回第一首
   });
   audio.addEventListener('play', function () { playBtn.textContent = '暂停'; });
   audio.addEventListener('pause', function () { playBtn.textContent = '播放'; });
@@ -252,8 +290,297 @@
     audio.volume = volBar.value / 100;
   });
 
+  // ====== URL 参数自动播 (?auto=music / ?auto=radio / ?auto=stop / ?auto=next) ======
+  function getParam(name) {
+    try { return new URLSearchParams(location.search).get(name); } catch (e) { return null; }
+  }
+
+  function todayStr() {
+    var d = new Date();
+    var m = d.getMonth() + 1, day = d.getDate();
+    return d.getFullYear() + '-' + (m < 10 ? '0' + m : '' + m) + '-' + (day < 10 ? '0' + day : '' + day);
+  }
+
+  function shuffle(a) {
+    for (var i = a.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+    }
+    return a;
+  }
+
+  // 跨标签页命令：stop/next 由 Tasker 打开一个新标签页发指令，
+  // 正在播的那个标签页收到后执行。BroadcastChannel + localStorage 双通道。
+  var bc = null;
+  try { bc = new BroadcastChannel('umami-player'); } catch (e) { bc = null; }
+
+  function sendCommand(cmd) {
+    var msg = { cmd: cmd, t: Date.now() };
+    try { if (bc) bc.postMessage(msg); } catch (e) {}
+    try { localStorage.setItem('umami-cmd', JSON.stringify(msg)); } catch (e) {}
+  }
+
+  function onRemoteCommand(cmd) {
+    if (cmd === 'stop') { pauseCurrent(); setAutoStatus('已暂停。'); }
+    else if (cmd === 'next') {
+      if (tracks.length) { playNext(); setAutoStatus('已切下一首。'); }
+    }
+  }
+
+  if (bc) {
+    bc.onmessage = function (ev) {
+      if (ev && ev.data && ev.data.cmd) onRemoteCommand(ev.data.cmd);
+    };
+  }
+  window.addEventListener('storage', function (ev) {
+    if (ev.key !== 'umami-cmd' || !ev.newValue) return;
+    try {
+      var m = JSON.parse(ev.newValue);
+      if (m && m.cmd) onRemoteCommand(m.cmd);
+    } catch (e) {}
+  });
+
+  // ====== IndexedDB：存目录 handle（File System Access API） ======
+  var DB_NAME = 'umami-player';
+  var STORE = 'handles';
+
+  function idbOpen() {
+    return new Promise(function (resolve, reject) {
+      var req = indexedDB.open(DB_NAME, 1);
+      req.onupgradeneeded = function () { req.result.createObjectStore(STORE); };
+      req.onsuccess = function () { resolve(req.result); };
+      req.onerror = function () { reject(req.error); };
+    });
+  }
+
+  function idbGet(key) {
+    return idbOpen().then(function (db) {
+      return new Promise(function (resolve, reject) {
+        var tx = db.transaction(STORE, 'readonly');
+        var req = tx.objectStore(STORE).get(key);
+        req.onsuccess = function () { resolve(req.result || null); };
+        req.onerror = function () { reject(req.error); };
+      });
+    });
+  }
+
+  function idbPut(key, val) {
+    return idbOpen().then(function (db) {
+      return new Promise(function (resolve, reject) {
+        var tx = db.transaction(STORE, 'readwrite');
+        var req = tx.objectStore(STORE).put(val, key);
+        req.onsuccess = function () { resolve(); };
+        req.onerror = function () { reject(req.error); };
+      });
+    });
+  }
+
+  function hasFSA() {
+    return typeof window.showDirectoryPicker === 'function';
+  }
+
+  // 读权限：granted 直接读；prompt 试着要一次（无手势时可能要不到，返回 prompt 后走授权按钮）；
+  // denied / 异常一律回退到让用户重选。
+  async function ensureReadPermission(handle) {
+    if (!handle || typeof handle.queryPermission !== 'function') return 'denied';
+    try {
+      var st = await handle.queryPermission({ mode: 'read' });
+      if (st === 'granted') return 'granted';
+      if (st === 'prompt') {
+        try {
+          var st2 = await handle.requestPermission({ mode: 'read' });
+          return st2;
+        } catch (e) { return 'prompt'; }
+      }
+      return st;
+    } catch (e) { return 'denied'; }
+  }
+
+  // 读目录里的音频：flattenOne=true 时再扁平化读一层子文件夹（Music 与 App 行为一致）
+  async function collectAudio(dirHandle, flattenOne) {
+    var out = [];
+    for await (var entry of dirHandle.values()) {
+      if (entry.kind === 'file') {
+        if (isAudio(entry.name)) {
+          var f = await entry.getFile();
+          out.push({ name: entry.name, rel: entry.name, file: f });
+        }
+      } else if (entry.kind === 'directory' && flattenOne) {
+        for await (var sub of entry.values()) {
+          if (sub.kind === 'file' && isAudio(sub.name)) {
+            var f2 = await sub.getFile();
+            out.push({ name: sub.name, rel: entry.name + '/' + sub.name, file: f2 });
+          }
+        }
+      }
+    }
+    return out;
+  }
+
+  function tracksFromFiles(list) {
+    tracks.forEach(function (t) { URL.revokeObjectURL(t.url); });
+    tracks = list.map(function (it) {
+      return { name: it.name, rel: it.rel, url: URL.createObjectURL(it.file) };
+    });
+  }
+
+  function showAuthButton(kind, dateStr) {
+    pendingAuto = { kind: kind, date: dateStr || null };
+    if (authBtn) authBtn.hidden = false;
+  }
+
+  if (authBtn) authBtn.addEventListener('click', function () {
+    authBtn.hidden = true;
+    var p = pendingAuto; pendingAuto = null;
+    if (!p) return;
+    if (p.kind === 'music') loadMusicAuto();
+    else if (p.kind === 'radio') loadRadioAuto(p.date || todayStr());
+  });
+
+  async function loadMusicAuto() {
+    setAutoStatus('正在读取 Music 文件夹…');
+    var handle = null;
+    try { handle = await idbGet('music'); } catch (e) { handle = null; }
+    if (!handle) {
+      setAutoStatus('还没有选过 Music 文件夹，请点下面的按钮选一次，选完就记住了。');
+      return;
+    }
+    var perm = await ensureReadPermission(handle);
+    if (perm !== 'granted') {
+      setAutoStatus('Music 文件夹需要重新授权，请点“点一下授权并播放”。');
+      showAuthButton('music');
+      return;
+    }
+    var list = await collectAudio(handle, true);
+    if (!list.length) {
+      setAutoStatus('Music 文件夹里没有找到音频文件，请重选一次。');
+      return;
+    }
+    list.sort(function (a, b) {
+      var x = a.rel.toLowerCase(), y = b.rel.toLowerCase();
+      return x < y ? -1 : (x > y ? 1 : 0);
+    });
+    shuffle(list);
+    tracksFromFiles(list);
+    current = -1;
+    folderInfo.innerHTML = '文件夹：<b>Music</b>，共 ' + tracks.length + ' 首（乱序循环）。';
+    renderPlaylist();
+    playIndex(0);
+    setAutoStatus('正在播放 Music（乱序循环）。');
+  }
+
+  async function loadRadioAuto(dateStr) {
+    setAutoStatus('正在读取 ' + dateStr + ' 的电台…');
+    var handle = null;
+    try { handle = await idbGet('radio'); } catch (e) { handle = null; }
+    if (!handle) {
+      setAutoStatus('还没有选过 Radio 文件夹，请点下面的按钮选一次，选完就记住了。');
+      return;
+    }
+    var perm = await ensureReadPermission(handle);
+    if (perm !== 'granted') {
+      setAutoStatus('Radio 文件夹需要重新授权，请点“点一下授权并播放”。');
+      showAuthButton('radio', dateStr);
+      return;
+    }
+    var dayDir = null;
+    try {
+      var d1 = await handle.getDirectoryHandle(dateStr);
+      dayDir = await d1.getDirectoryHandle(dateStr);
+    } catch (e) { dayDir = null; }
+    if (!dayDir) {
+      setAutoStatus(dateStr + ' 还没有电台节目。');
+      return;
+    }
+    var list = await collectAudio(dayDir, false);
+    if (!list.length) {
+      setAutoStatus(dateStr + ' 的电台文件夹是空的。');
+      return;
+    }
+    list.sort(function (a, b) {
+      var x = a.rel.toLowerCase(), y = b.rel.toLowerCase();
+      return x < y ? -1 : (x > y ? 1 : 0);
+    });
+    tracksFromFiles(list);
+    current = -1;
+    folderInfo.innerHTML = '文件夹：<b>Radio/' + dateStr + '</b>，共 ' + tracks.length + ' 首（按顺序循环）。';
+    renderPlaylist();
+    playIndex(0);
+    setAutoStatus('正在播放 ' + dateStr + ' 的电台（按顺序循环）。');
+  }
+
+  async function pickFolder(kind) {
+    if (!hasFSA()) return;
+    var id = kind === 'music' ? 'umami-music' : 'umami-radio';
+    try {
+      var handle = await window.showDirectoryPicker({ id: id, mode: 'read' });
+      await idbPut(kind, handle);
+      updateStoredInfo();
+      setAutoStatus((kind === 'music' ? 'Music' : 'Radio') + ' 文件夹已记住：' + handle.name + '。以后打开网址会自动播。');
+    } catch (e) {
+      if (e && e.name === 'AbortError') return; // 用户取消选择
+      setAutoStatus('选择文件夹失败：' + (e && e.message ? e.message : String(e)));
+    }
+  }
+
+  function updateStoredInfo() {
+    if (!storedInfo) return;
+    Promise.all([
+      idbGet('music').catch(function () { return null; }),
+      idbGet('radio').catch(function () { return null; })
+    ]).then(function (res) {
+      var m = res[0], r = res[1];
+      storedInfo.textContent =
+        'Music：' + (m ? '已记住（' + (m.name || '') + '）' : '未选择') +
+        '；Radio：' + (r ? '已记住（' + (r.name || '') + '）' : '未选择') + '。';
+    });
+  }
+
+  if (pickMusicBtn) pickMusicBtn.addEventListener('click', function () { pickFolder('music'); });
+  if (pickRadioBtn) pickRadioBtn.addEventListener('click', function () { pickFolder('radio'); });
+
+  // 界面按能力切换：支持 File System Access 就用两个记住式按钮，
+  // 不支持就退回原来的手动“选择文件夹”（每次打开都要重选）。
+  if (hasFSA()) {
+    if (fsaBox) fsaBox.hidden = false;
+    if (pickBtn) pickBtn.hidden = true;
+    if (hintEl) hintEl.textContent = '第一次点下面选一次 Music 文件夹和 Radio 文件夹，选完就记住了；以后打开网址会自动播。';
+    updateStoredInfo();
+  } else {
+    if (fsaBox) fsaBox.hidden = true;
+    if (pickBtn) pickBtn.hidden = false;
+    if (hintEl) hintEl.textContent = '这个浏览器不支持自动记住文件夹，每次打开都要点「选择文件夹」手动选一次。';
+  }
+
   bindMediaSessionActions();
   renderPlaylist();
+
+  // 打开网址即自动播（编号入口：001=音乐，002=电台，003=停止，004=下一首；
+  // ?auto=music/radio/stop/next 仍可用，是同一入口的别名）
+  (function autoRun() {
+    var mode = getParam('auto');
+    var go = getParam('go');
+    if (go) {
+      var map = { '001': 'music', '002': 'radio', '003': 'stop', '004': 'next' };
+      mode = map[go] || mode;
+    }
+    if (!mode) return;
+    if (mode === 'stop' || mode === 'next') {
+      sendCommand(mode);
+      setAutoStatus(mode === 'stop'
+        ? '已发送“暂停”指令（播放器须在另一个标签页开着）。'
+        : '已发送“下一首”指令（播放器须在另一个标签页开着）。');
+      return;
+    }
+    if (mode === 'music') { loadMusicAuto(); return; }
+    if (mode === 'radio') {
+      var ds = getParam('date');
+      if (!ds || !/^\d{4}-\d{2}-\d{2}$/.test(ds)) ds = todayStr();
+      loadRadioAuto(ds);
+      return;
+    }
+    // 未知 auto 值：当作手动模式，不做任何事
+  })();
 })();
 </script>
 </body>
