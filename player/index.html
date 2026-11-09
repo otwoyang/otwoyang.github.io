@@ -341,6 +341,21 @@
   });
 
   // ====== IndexedDB：存目录 handle（File System Access API） ======
+  // handle 另外缓存在内存里（cachedHandles），因为 requestPermission 必须在
+  // 用户手势里同步调用——授权按钮一点就先要权限，不能先 await 读库，
+  // 否则手势过期、权限要不到，页面就一直卡在“重新授权”。
+  var cachedHandles = { music: null, radio: null };
+
+  function refreshCachedHandles() {
+    return Promise.all([
+      idbGet('music').catch(function () { return null; }),
+      idbGet('radio').catch(function () { return null; })
+    ]).then(function (res) {
+      cachedHandles.music = res[0];
+      cachedHandles.radio = res[1];
+    });
+  }
+
   var DB_NAME = 'umami-player';
   var STORE = 'handles';
 
@@ -429,18 +444,39 @@
     if (authBtn) authBtn.hidden = false;
   }
 
-  if (authBtn) authBtn.addEventListener('click', function () {
+  // 授权按钮：点一下 = 在手势里直接要权限 + 接着播。
+  // 关键：requestPermission 必须是手势里第一个调用，不能先 await 读库或别的，
+  // 否则手势过期、系统权限框弹不出来，页面就死循环回“重新授权”。
+  if (authBtn) authBtn.addEventListener('click', async function () {
     authBtn.hidden = true;
     var p = pendingAuto; pendingAuto = null;
     if (!p) return;
+    var handle = cachedHandles[p.kind];
+    if (handle && typeof handle.requestPermission === 'function') {
+      try {
+        var st = await handle.requestPermission({ mode: 'read' });
+        if (st !== 'granted') {
+          setAutoStatus('没有拿到文件夹授权，请再点一次“点一下授权并播放”。');
+          showAuthButton(p.kind, p.date);
+          return;
+        }
+      } catch (e) {
+        setAutoStatus('授权失败，请再点一次“点一下授权并播放”。');
+        showAuthButton(p.kind, p.date);
+        return;
+      }
+    }
     if (p.kind === 'music') loadMusicAuto();
     else if (p.kind === 'radio') loadRadioAuto(p.date || todayStr());
   });
 
   async function loadMusicAuto() {
     setAutoStatus('正在读取 Music 文件夹…');
-    var handle = null;
-    try { handle = await idbGet('music'); } catch (e) { handle = null; }
+    var handle = cachedHandles.music;
+    if (!handle) {
+      try { handle = await idbGet('music'); } catch (e) { handle = null; }
+      if (handle) cachedHandles.music = handle;
+    }
     if (!handle) {
       setAutoStatus('还没有选过 Music 文件夹，请点下面的按钮选一次，选完就记住了。');
       return;
@@ -471,8 +507,11 @@
 
   async function loadRadioAuto(dateStr) {
     setAutoStatus('正在读取 ' + dateStr + ' 的电台…');
-    var handle = null;
-    try { handle = await idbGet('radio'); } catch (e) { handle = null; }
+    var handle = cachedHandles.radio;
+    if (!handle) {
+      try { handle = await idbGet('radio'); } catch (e) { handle = null; }
+      if (handle) cachedHandles.radio = handle;
+    }
     if (!handle) {
       setAutoStatus('还没有选过 Radio 文件夹，请点下面的按钮选一次，选完就记住了。');
       return;
@@ -515,6 +554,7 @@
     try {
       var handle = await window.showDirectoryPicker({ id: id, mode: 'read' });
       await idbPut(kind, handle);
+      cachedHandles[kind] = handle;
       updateStoredInfo();
       setAutoStatus((kind === 'music' ? 'Music' : 'Radio') + ' 文件夹已记住：' + handle.name + '。以后打开网址会自动播。');
     } catch (e) {
@@ -546,6 +586,7 @@
     if (pickBtn) pickBtn.hidden = true;
     if (hintEl) hintEl.textContent = '第一次点下面选一次 Music 文件夹和 Radio 文件夹，选完就记住了；以后打开网址会自动播。';
     updateStoredInfo();
+    refreshCachedHandles();
   } else {
     if (fsaBox) fsaBox.hidden = true;
     if (pickBtn) pickBtn.hidden = false;
